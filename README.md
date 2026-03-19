@@ -47,7 +47,11 @@ Toutes les intégrations listées dans ce dépôt sont conçues pour supporter l
 
 ## Architecture
 
-Chaque dossier contient les fichiers de configuration (JSON/OpenAPI) et la documentation technique pour une plateforme spécifique :
+Chaque dossier- `yarn sync`: Met à jour le Swagger global (`swagger.json`) à la racine.
+- `yarn generate`: Exécute les scripts de génération spécifiques à chaque plateforme (ex: `zapier-generate.ts`).
+- `yarn publish`: Exécute les scripts de publication spécifiques à chaque plateforme (ex: `zapier-publish.ts`).
+- `yarn docs`: Met à jour la documentation de chaque intégration.
+- `yarn test`: Vérifie la conformité du Swagger global.
 
 - `/asana`
 - `/clickup`

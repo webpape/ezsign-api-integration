@@ -1,0 +1,25 @@
+{
+  "name": "ezsign-api-integration",
+  "packageManager": "yarn@4.13.0",
+  "type": "module",
+  "scripts": {
+    "sync": "tsx scripts/sync-swagger.ts",
+    "docs": "tsx scripts/update-docs.ts",
+    "generate": "tsx scripts/generate-all.ts",
+    "publish": "tsx scripts/publish-all.ts",
+    "check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@hubspot/cli": "^8.1.0",
+    "@salesforce/cli": "2.127.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.5.0",
+    "axios": "^1.13.6",
+    "fs-extra": "^11.3.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0",
+    "zapier-platform-cli": "^18.3.0"
+  }
+}
