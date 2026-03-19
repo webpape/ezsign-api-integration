@@ -1,30 +1,41 @@
 # Zendesk Connector Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth2 (Zendesk Support App)
-- **Scopes :** `read`, `write`
-- **Logic eZsign :** Synchronisation des tickets Zendesk avec les signatures eZsign.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign :
-  - `document.signed` -> Mettre à jour le champ personnalisé "Statut de Signature" du ticket Zendesk.
-  - `document.completed` -> Résoudre le ticket Zendesk automatiquement.
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Mise à jour du Custom Field Zendesk.
+- `document.completed` -> Signature et archivage du PDF dans les fichiers du ticket.
 
-## Actions
-1. **Send Link for Signing :** Envoyer le lien eZsign via un commentaire public dans Zendesk.
-2. **Attach Final PDF :** Ajouter le document signé en pièce jointe au ticket Zendesk.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Zendesk Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérification de la session active Zendesk-eZsign.
 
-## 1. Create a Zendesk App
-1. Go to **Zendesk Admin Center** > **Apps and integrations** > **Zendesk Support apps**.
-2. Register a new app named **eZsign Integration**.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Créer un nouveau document à partir d'un ticket Zendesk Support.
 
-## 2. Configure OAuth2
-1. Redirect URI: `https://your-server.com/zendesk/auth`.
-2. Copy the **Client ID** and **Client Secret**.
+### 3. Ezsigndocument_ApplyEzsigntemplate_V2
+- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
+- **Summary :** Appliquer un template eZsign prédéfini (ex: Accord de Service).
 
-## 3. Deployment
-1. Configure the OAuth2 URLs:
-   - Auth: `https://{subdomain}.zendesk.com/oauth/authorizations/new`
-   - Token: `https://{subdomain}.zendesk.com/oauth/tokens`
+### 4. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Récupérer l'URL de téléchargement sécurisée (expire après 5 min).
+
+### 5. Ezsignfoldersignerassociation_CreateObject_V2
+- **POST** `/2/object/ezsignfoldersignerassociation`
+- **Summary :** Associer un signataire (Demandeur du ticket Zendesk).
+
+### 6. Ezsigntemplate_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
+- **Summary :** Lister les templates disponibles dans les macros Zendesk.
+
+## Actions Zendesk
+- **Status Mapping :** Les statuts eZsign sont mappés aux Custom Fields Zendesk.
+- **Macros :** Utilise les webhooks eZsign pour déclencher des actions automatisées via Zendesk Targets.
