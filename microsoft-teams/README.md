@@ -1,33 +1,37 @@
 # Microsoft Teams Connector Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth2 (Microsoft Graph API)
-- **Scopes :** `Chat.ReadWrite`, `TeamsActivity.Send`, `ChannelMessage.Send`
-- **Logic eZsign :** Notifications de signature dans les canaux Teams via Adaptive Cards.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign :
-  - `document.signed` -> Envoyer une Adaptive Card Teams : "📄 Document Signé : [Nom]."
-  - `document.completed` -> Message : "🏁 La transaction [Nom] est maintenant complétée."
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Envoi automatique d'Adaptive Cards dans les canaux Teams.
+- `document.completed` -> Message final avec lien de téléchargement.
 
-## Actions
-1. **Post to Channel :** Publier une mise à jour sur une signature en cours.
-2. **Send Direct Message :** Envoyer un lien de signature eZsign directement à un employé via Teams.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Microsoft Teams Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérifier les permissions de l'application Teams intégrée.
 
-## 1. Register an App in Azure AD
-1. Go to the [Azure Portal](https://portal.azure.com/) > **Azure Active Directory** > **App registrations**.
-2. Create a new registration named **eZsign Teams Integration**.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Déclencher une signature via une Task Module ou Message Shortcut Teams.
 
-## 2. Configure Permissions
-1. Under **API permissions**, add **Microsoft Graph**:
-   - `ChannelMessage.Send`
-   - `TeamsActivity.Send`
+### 3. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Fournir un lien de téléchargement sécurisé dans le chat Teams (expire après 5 min).
 
-## 3. Deployment
-1. Copy the **Application (client) ID** and **Directory (tenant) ID**.
-2. Generate a **Client secret**.
-3. Configure the OAuth2 URLs:
-   - Auth: `https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize`
-   - Token: `https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token`
+### 4. Ezsignfoldertype_GetAutocomplete_V2
+- **GET** `/2/object/ezsignfoldertype/getAutocomplete/{sSelector}`
+- **Summary :** Liste déroulante des types de dossiers dans les formulaires de création Teams.
+
+### 5. Ezsigntemplateglobal_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplateglobal/getAutocomplete/{sSelector}`
+- **Summary :** Sélectionner un template global eZmax pour les documents de collaboration.
+
+## Actions Teams
+- **Interactive Notifications :** Utilise les webhooks eZsign mappés vers les Activity Feeds ou Channel Messages.
+- **Teams Bot :** Utilise `Ezsigndocument_GetDownloadUrl_V1` pour répondre aux requêtes de statut.

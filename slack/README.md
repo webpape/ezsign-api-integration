@@ -1,29 +1,37 @@
-# Slack Connector Integration - eZsign
+# Slack & Microsoft Teams Connectors Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth2 (Slack App)
-- **Scopes :** `chat:write`, `incoming-webhook`, `channels:read`
-- **Logic eZsign :** Notifications en temps réel dans un canal spécifique lors des changements d'état des documents.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign :
-  - `document.signed` -> Envoyer un message Slack : "✅ Le document [Nom] a été signé par [Signataire]."
-  - `document.rejected` -> Envoyer un message Slack : "❌ Le document [Nom] a été rejeté par [Signataire]."
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Envoi automatique de notifications (Adaptive Cards pour Teams, Block Kit pour Slack).
+- `document.completed` -> Message final incluant le lien de téléchargement.
 
-## Actions
-1. **Send Notification :** Envoyer manuellement un rappel de signature vers un utilisateur Slack.
-2. **List Recent Transactions :** Afficher les 5 dernières transactions eZsign directement dans Slack via une commande slash `/ezsign-status`.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Slack Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérifier les permissions de l'application Slack/Teams intégrée.
 
-## 1. Create a Slack App
-1. Go to [api.slack.com/apps](https://api.slack.com/apps).
-2. Create an app "From scratch" named **eZsign Notifier**.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Déclencher une signature via une commande Slash ou Message Shortcut.
 
-## 2. Configure OAuth & Permissions
-1. Add `chat:write` and `incoming-webhook`.
-2. Install the app to your workspace.
+### 3. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Fournir un lien de téléchargement sécurisé directement dans le canal de communication.
 
-## 3. Setup Webhook
-1. Copy the **Webhook URL** provided by Slack.
-2. Configure this URL in your eZsign Webhook settings for the desired events.
+### 4. Ezsignfoldertype_GetAutocomplete_V2
+- **GET** `/2/object/ezsignfoldertype/getAutocomplete/{sSelector}`
+- **Summary :** Liste déroulante des types de dossiers dans les formulaires de création.
+
+### 5. Ezsigntemplateglobal_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplateglobal/getAutocomplete/{sSelector}`
+- **Summary :** Sélectionner un template global eZmax pour les documents standards.
+
+## Actions Slack/Teams
+- **Real-time Alert :** Utilise les webhooks eZsign mappés vers l'API de messagerie.
+- **Bot Interactions :** Commande `/ezsign-status` utilisant `Ezsigndocument_GetDownloadUrl_V1`.
