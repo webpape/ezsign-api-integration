@@ -4,8 +4,8 @@ This document details the mapping between the eZsign API (PowerAutomate definiti
 
 ## Authentication
 - **Mechanism**: OAuth2
-- **Authorize URL**: `https://api.ezsign.ca/oauth/authorize`
-- **Token URL**: `https://api.ezsign.ca/oauth/token`
+- **Authorize URL**: `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/authorize`
+- **Token URL**: `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/token`
 - **Base API URL**: `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest`
 
 ## Triggers (Webhooks)
