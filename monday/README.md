@@ -2,8 +2,8 @@
 
 ## Authentification
 - **Méthode :** OAuth2
-- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
-- **Token URL :** `https://api.ezsign.ca/oauth/token`
+- **Authorization URL :** `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/authorize`
+- **Token URL :** `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/token`
 
 ## Webhooks
 Logic synchronisée avec eZsign Power Automate :
