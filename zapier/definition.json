@@ -4,8 +4,8 @@
   "auth": {
     "type": "oauth2",
     "params": {
-      "authorize_url": "https://api.ezsign.ca/oauth/authorize",
-      "token_url": "https://api.ezsign.ca/oauth/token",
+      "authorize_url": "https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/authorize",
+      "token_url": "https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/token",
       "scopes": ["repo", "workflow", "read:user"]
     }
   },
