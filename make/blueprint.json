@@ -1,6 +1,6 @@
 {
   "name": "eZsign",
-  "base": "https://api.ezsign.ca/v1",
+  "base": "https://prod.api.appcluster01.ca-central-1.ezmax.com/rest",
   "auth": {
     "type": "oauth2",
     "spec": {
@@ -10,15 +10,190 @@
   },
   "modules": [
     {
-      "name": "watch_documents",
+      "name": "ezsignfolder_completed",
       "type": "webhook",
-      "label": "Watch Documents Signed",
-      "output": {
-        "parameters": [
-          { "name": "document_id", "type": "string" },
-          { "name": "status", "type": "string" }
-        ]
-      }
+      "label": "Watch Ezsignfolder Completed",
+      "description": "Triggered when an Ezsignfolder is completed."
+    },
+    {
+      "name": "ezsigndocument_completed",
+      "type": "webhook",
+      "label": "Watch Ezsigndocument Completed",
+      "description": "Triggered when an Ezsigndocument is completed."
+    },
+    {
+      "name": "ezsignfoldersignerassociation_completed",
+      "type": "webhook",
+      "label": "Watch Ezsignfoldersignerassociation Completed",
+      "description": "Triggered when a Signer has completed their signatures."
+    },
+    {
+      "name": "activesession_getcurrent_v2",
+      "type": "action",
+      "label": "Get Current Activesession",
+      "url": "/2/object/activesession/getCurrent",
+      "method": "GET"
+    },
+    {
+      "name": "communication_getcommunicationbody_v1",
+      "type": "action",
+      "label": "Retrieve the communication body",
+      "url": "/1/object/communication/{pkiCommunicationID}/getCommunicationBody",
+      "method": "GET"
+    },
+    {
+      "name": "ezsigndocument_applyezsigntemplateglobal_v1",
+      "type": "action",
+      "label": "Apply an Ezsigntemplateglobal to the Ezsigndocument",
+      "url": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplateglobal",
+      "method": "POST"
+    },
+    {
+      "name": "ezsigndocument_applyezsigntemplate_v2",
+      "type": "action",
+      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
+      "url": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
+      "method": "POST"
+    },
+    {
+      "name": "ezsigndocument_createezsignelementspositionedbyword_v2",
+      "type": "action",
+      "label": "Create multiple Ezsignsignatures/Ezsignformfieldgroups",
+      "url": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/createEzsignelementsPositionedByWord",
+      "method": "POST"
+    },
+    {
+      "name": "ezsigndocument_createobject_v3",
+      "type": "action",
+      "label": "Create a new Ezsigndocument",
+      "url": "/3/object/ezsigndocument",
+      "method": "POST"
+    },
+    {
+      "name": "ezsigndocument_getdownloadurl_v1",
+      "type": "action",
+      "label": "Retrieve a URL to download documents",
+      "url": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
+      "method": "GET"
+    },
+    {
+      "name": "ezsigndocument_prefillezsignform_v1",
+      "type": "action",
+      "label": "Prefill an Ezsignform",
+      "url": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/prefillEzsignform",
+      "method": "POST"
+    },
+    {
+      "name": "ezsignfolder_createobject_v3",
+      "type": "action",
+      "label": "Create a new Ezsignfolder",
+      "url": "/3/object/ezsignfolder",
+      "method": "POST"
+    },
+    {
+      "name": "ezsignfolder_dispose_v1",
+      "type": "action",
+      "label": "Dispose the Ezsignfolder",
+      "url": "/1/object/ezsignfolder/{pkiEzsignfolderID}/dispose",
+      "method": "POST"
+    },
+    {
+      "name": "ezsignfolder_getezsigndocuments_v2",
+      "type": "action",
+      "label": "Retrieve an existing Ezsignfolder's Ezsigndocuments",
+      "url": "/2/object/ezsignfolder/{pkiEzsignfolderID}/getEzsigndocuments",
+      "method": "GET"
+    },
+    {
+      "name": "ezsignfolder_reorder_v2",
+      "type": "action",
+      "label": "Reorder Ezsigndocuments in the Ezsignfolder",
+      "url": "/2/object/ezsignfolder/{pkiEzsignfolderID}/reorder",
+      "method": "POST"
+    },
+    {
+      "name": "ezsignfolder_send_v3",
+      "type": "action",
+      "label": "Send the Ezsignfolder",
+      "url": "/3/object/ezsignfolder/{pkiEzsignfolderID}/send",
+      "method": "POST"
+    },
+    {
+      "name": "ezsignfoldersignerassociation_createobject_v2",
+      "type": "action",
+      "label": "Create a new Ezsignfoldersignerassociation",
+      "url": "/2/object/ezsignfoldersignerassociation",
+      "method": "POST"
+    },
+    {
+      "name": "ezsignfoldertype_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Ezsignfoldertypes and IDs",
+      "url": "/2/object/ezsignfoldertype/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "ezsigntemplate_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Ezsigntemplates and IDs",
+      "url": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "ezsigntemplateglobal_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Ezsigntemplateglobals and IDs",
+      "url": "/2/object/ezsigntemplateglobal/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "ezsigntemplatepackage_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Ezsigntemplatepackages and IDs",
+      "url": "/2/object/ezsigntemplatepackage/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "ezsigntsarequirement_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Ezsigntsarequirements and IDs",
+      "url": "/2/object/ezsigntsarequirement/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "language_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Languages and IDs",
+      "url": "/2/object/language/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "secretquestion_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Secretquestions and IDs",
+      "url": "/2/object/secretquestion/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "taxassignment_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Taxassignments and IDs",
+      "url": "/2/object/taxassignment/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "user_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Users and IDs",
+      "url": "/2/object/user/getAutocomplete/{sSelector}",
+      "method": "GET"
+    },
+    {
+      "name": "userlogintype_getautocomplete_v2",
+      "type": "action",
+      "label": "Retrieve Userlogintypes and IDs",
+      "url": "/2/object/userlogintype/getAutocomplete/{sSelector}",
+      "method": "GET"
     }
   ],
   "common": {

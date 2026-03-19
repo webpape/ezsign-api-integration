@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.3.0",
   "name": "eZsign Connector",
   "auth": {
     "type": "oauth2",
@@ -11,22 +11,174 @@
   },
   "triggers": [
     {
-      "key": "document_signed",
-      "label": "Document Signed",
-      "description": "Triggers when a document is fully signed.",
+      "key": "ezsignfolder_completed",
+      "label": "Ezsignfolder Completed",
+      "description": "Triggered when an Ezsignfolder is completed.",
       "type": "hook",
-      "hook_url": "{{webhook_url}}"
+      "hook_url": "{{webhook_url}}",
+      "operationId": "Ezsignfolder_Completed"
+    },
+    {
+      "key": "ezsigndocument_completed",
+      "label": "Ezsigndocument Completed",
+      "description": "Triggered when an Ezsigndocument is completed.",
+      "type": "hook",
+      "hook_url": "{{webhook_url}}",
+      "operationId": "Ezsigndocument_Completed"
+    },
+    {
+      "key": "ezsignfoldersignerassociation_completed",
+      "label": "Ezsignfoldersignerassociation Completed",
+      "description": "Triggered when a Signer has completed their signatures.",
+      "type": "hook",
+      "hook_url": "{{webhook_url}}",
+      "operationId": "Ezsignfoldersignerassociation_Completed"
     }
   ],
   "actions": [
     {
-      "key": "create_transaction",
-      "label": "Create Transaction",
-      "description": "Starts a new signature process.",
-      "inputs": [
-        { "key": "filename", "type": "string", "required": true },
-        { "key": "signers", "type": "array", "required": true }
-      ]
+      "key": "activesession_getcurrent_v2",
+      "label": "Get Current Activesession",
+      "description": "Retrieve the details about the current activesession",
+      "operationId": "Activesession_GetCurrent_V2"
+    },
+    {
+      "key": "communication_getcommunicationbody_v1",
+      "label": "Retrieve the communication body",
+      "description": "This endpoint returns the communication body.",
+      "operationId": "Communication_GetCommunicationBody_V1"
+    },
+    {
+      "key": "ezsigndocument_applyezsigntemplateglobal_v1",
+      "label": "Apply an Ezsigntemplateglobal to the Ezsigndocument",
+      "description": "This endpoint applies a predefined template to the ezsign document.",
+      "operationId": "Ezsigndocument_ApplyEzsigntemplateglobal_V1"
+    },
+    {
+      "key": "ezsigndocument_applyezsigntemplate_v2",
+      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
+      "description": "This endpoint applies a predefined template to the ezsign document.",
+      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2"
+    },
+    {
+      "key": "ezsigndocument_createezsignelementspositionedbyword_v2",
+      "label": "Create multiple Ezsignsignatures/Ezsignformfieldgroups",
+      "description": "Using this endpoint, you can create multiple Ezsignsignatures/Ezsignformfieldgroups positioned by word at the same time.",
+      "operationId": "Ezsigndocument_CreateEzsignelementsPositionedByWord_V2"
+    },
+    {
+      "key": "ezsigndocument_createobject_v3",
+      "label": "Create a new Ezsigndocument",
+      "description": "The endpoint allows to create one or many elements at once.",
+      "operationId": "Ezsigndocument_CreateObject_V3"
+    },
+    {
+      "key": "ezsigndocument_getdownloadurl_v1",
+      "label": "Retrieve a URL to download documents",
+      "description": "This endpoint returns URLs to different files that can be downloaded during the signing process.",
+      "operationId": "Ezsigndocument_GetDownloadUrl_V1"
+    },
+    {
+      "key": "ezsigndocument_prefillezsignform_v1",
+      "label": "Prefill an Ezsignform",
+      "description": "Using this endpoint, you can prefill an Ezsignform.",
+      "operationId": "Ezsigndocument_PrefillEzsignform_V1"
+    },
+    {
+      "key": "ezsignfolder_createobject_v3",
+      "label": "Create a new Ezsignfolder",
+      "description": "The endpoint allows to create one or many elements at once.",
+      "operationId": "Ezsignfolder_CreateObject_V3"
+    },
+    {
+      "key": "ezsignfolder_dispose_v1",
+      "label": "Dispose the Ezsignfolder",
+      "description": "Dispose the Ezsignfolder",
+      "operationId": "Ezsignfolder_Dispose_V1"
+    },
+    {
+      "key": "ezsignfolder_getezsigndocuments_v2",
+      "label": "Retrieve an existing Ezsignfolder's Ezsigndocuments",
+      "description": "Retrieve an existing Ezsignfolder's Ezsigndocuments",
+      "operationId": "Ezsignfolder_GetEzsigndocuments_V2"
+    },
+    {
+      "key": "ezsignfolder_reorder_v2",
+      "label": "Reorder Ezsigndocuments in the Ezsignfolder",
+      "description": "Reorder Ezsigndocuments in the Ezsignfolder",
+      "operationId": "Ezsignfolder_Reorder_V2"
+    },
+    {
+      "key": "ezsignfolder_send_v3",
+      "label": "Send the Ezsignfolder",
+      "description": "Send the Ezsignfolder",
+      "operationId": "Ezsignfolder_Send_V3"
+    },
+    {
+      "key": "ezsignfoldersignerassociation_createobject_v2",
+      "label": "Create a new Ezsignfoldersignerassociation",
+      "description": "The endpoint allows to create one or many elements at once.",
+      "operationId": "Ezsignfoldersignerassociation_CreateObject_V2"
+    },
+    {
+      "key": "ezsignfoldertype_getautocomplete_v2",
+      "label": "Retrieve Ezsignfoldertypes and IDs",
+      "description": "Get the list of Ezsignfoldertype to be used in a dropdown or autocomplete control.",
+      "operationId": "Ezsignfoldertype_GetAutocomplete_V2"
+    },
+    {
+      "key": "ezsigntemplate_getautocomplete_v2",
+      "label": "Retrieve Ezsigntemplates and IDs",
+      "description": "Get the list of Ezsigntemplate to be used in a dropdown or autocomplete control.",
+      "operationId": "Ezsigntemplate_GetAutocomplete_V2"
+    },
+    {
+      "key": "ezsigntemplateglobal_getautocomplete_v2",
+      "label": "Retrieve Ezsigntemplateglobals and IDs",
+      "description": "Get the list of Ezsigntemplateglobal to be used in a dropdown or autocomplete control.",
+      "operationId": "Ezsigntemplateglobal_GetAutocomplete_V2"
+    },
+    {
+      "key": "ezsigntemplatepackage_getautocomplete_v2",
+      "label": "Retrieve Ezsigntemplatepackages and IDs",
+      "description": "Get the list of Ezsigntemplatepackage to be used in a dropdown or autocomplete control.",
+      "operationId": "Ezsigntemplatepackage_GetAutocomplete_V2"
+    },
+    {
+      "key": "ezsigntsarequirement_getautocomplete_v2",
+      "label": "Retrieve Ezsigntsarequirements and IDs",
+      "description": "Get the list of Ezsigntsarequirement to be used in a dropdown or autocomplete control.",
+      "operationId": "Ezsigntsarequirement_GetAutocomplete_V2"
+    },
+    {
+      "key": "language_getautocomplete_v2",
+      "label": "Retrieve Languages and IDs",
+      "description": "Get the list of Language to be used in a dropdown or autocomplete control.",
+      "operationId": "Language_GetAutocomplete_V2"
+    },
+    {
+      "key": "secretquestion_getautocomplete_v2",
+      "label": "Retrieve Secretquestions and IDs",
+      "description": "Get the list of Secretquestion to be used in a dropdown or autocomplete control.",
+      "operationId": "Secretquestion_GetAutocomplete_V2"
+    },
+    {
+      "key": "taxassignment_getautocomplete_v2",
+      "label": "Retrieve Taxassignments and IDs",
+      "description": "Get the list of Taxassignment to be used in a dropdown or autocomplete control.",
+      "operationId": "Taxassignment_GetAutocomplete_V2"
+    },
+    {
+      "key": "user_getautocomplete_v2",
+      "label": "Retrieve Users and IDs",
+      "description": "Get the list of User to be used in a dropdown or autocomplete control.",
+      "operationId": "User_GetAutocomplete_V2"
+    },
+    {
+      "key": "userlogintype_getautocomplete_v2",
+      "label": "Retrieve Userlogintypes and IDs",
+      "description": "Get the list of Userlogintype to be used in a dropdown or autocomplete control.",
+      "operationId": "Userlogintype_GetAutocomplete_V2"
     }
   ]
 }
