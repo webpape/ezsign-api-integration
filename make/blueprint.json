@@ -4,8 +4,8 @@
   "auth": {
     "type": "oauth2",
     "spec": {
-      "authorize": "https://api.ezsign.ca/oauth/authorize",
-      "token": "https://api.ezsign.ca/oauth/token"
+      "authorize": "https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/authorize",
+      "token": "https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/token"
     }
   },
   "modules": [
