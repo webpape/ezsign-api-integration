@@ -1,32 +1,41 @@
 # Salesforce Connector Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth2 (Salesforce Connected App)
-- **Scopes :** `api`, `refresh_token`, `offline_access`
-- **Logic eZsign :** Synchronisation de l'email du signataire avec le Lead Salesforce.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign : Lorsqu'un document est signé, le statut du Lead Salesforce est mis à jour vers "Signed".
-- Action Salesforce : Utilisation de l'objet `Attachment` pour stocker le PDF final.
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Mise à jour de l'Objet Personnalisé Salesforce (Custom Object).
+- `document.completed` -> Téléchargement automatique du PDF signé vers Files.
 
-## Actions
-1. **Send Signature Request :** Déclenché depuis une fiche Lead ou Opportunity.
-2. **Retrieve Signed Document :** Une fois signé, le document est joint automatiquement à l'onglet 'Files' du Lead.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Salesforce Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérification de la validité de la session Salesforce-eZsign.
 
-## 1. Create a Salesforce Connected App
-1. Go to **Setup** > **App Manager** > **New Connected App**.
-2. Name it **eZsign API Integration**.
-3. Enable OAuth Settings and set the Callback URL.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Créer un nouveau document à partir d'un Lead ou Opportunity Salesforce.
 
-## 2. Configure Scopes
-Add the following scopes:
-- `api`
-- `refresh_token`
-- `offline_access`
+### 3. Ezsigndocument_ApplyEzsigntemplate_V2
+- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
+- **Summary :** Appliquer un template eZsign prédéfini (ex: Contrat Standard).
 
-## 3. Deployment
-1. Go to **Setup** > **Connected Apps** > **Manage Connected Apps**.
-2. Set **IP Relaxation** to "Relax IP restrictions" (optional).
-3. Set **Refresh Token Policy** to "Refresh token is valid until revoked".
+### 4. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Récupérer l'URL de téléchargement sécurisée (URL expire après 5 min).
+
+### 5. Ezsignfoldersignerassociation_CreateObject_V2
+- **POST** `/2/object/ezsignfoldersignerassociation`
+- **Summary :** Associer un signataire (Contact Salesforce) à un dossier de signature.
+
+### 6. Ezsigntemplate_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
+- **Summary :** Lister les templates disponibles dans le composant Salesforce.
+
+## Actions Salesforce
+- **Trigger Signature Flow :** Déclenché par un bouton ou Flow Builder utilisant `Ezsigndocument_CreateObject_V2`.
+- **Status Mapping :** Les statuts eZsign sont mappés aux étapes de vente (Stage) Salesforce.
