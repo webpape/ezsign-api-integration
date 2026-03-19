@@ -1,26 +1,41 @@
 # Trello Connector Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth1 (Trello App Key & Token)
-- **Logic eZsign :** Déplacement automatique d'une carte Trello lorsqu'un document est signé.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign :
-  - `document.signed` -> Déplacer la carte Trello correspondante vers la liste "Signé".
-  - `document.rejected` -> Déplacer la carte Trello vers la liste "À Revoir".
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Déplacement de la carte Trello.
+- `document.completed` -> Signature et archivage du PDF dans les pièces jointes de la carte.
 
-## Actions
-1. **Create Signature Card :** Créer une nouvelle carte Trello contenant les détails de la demande de signature eZsign.
-2. **Attach Signed Copy to Card :** Une fois signé, le document est joint à la carte Trello.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Trello Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérification de la session active Trello-eZsign.
 
-## 1. Get Trello App Key
-1. Visit [trello.com/app-key](https://trello.com/app-key).
-2. Copy your **API Key** and **Secret**.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Créer un nouveau document à partir d'une carte Trello.
 
-## 2. Generate a Token
-1. Use the Trello OAuth2 authorize URL to get a user token with `read,write` permissions.
+### 3. Ezsigndocument_ApplyEzsigntemplate_V2
+- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
+- **Summary :** Appliquer un template eZsign prédéfini (ex: Accord de Collaboration).
 
-## 3. Configuration
-1. Use the **eZsign document ID** as a custom field or in the card description to maintain the link between the signature and the card.
+### 4. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Récupérer l'URL de téléchargement sécurisée (expire après 5 min).
+
+### 5. Ezsignfoldersignerassociation_CreateObject_V2
+- **POST** `/2/object/ezsignfoldersignerassociation`
+- **Summary :** Associer un signataire (Membre de la carte Trello).
+
+### 6. Ezsigntemplate_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
+- **Summary :** Lister les templates disponibles dans les automatisations Butler Trello.
+
+## Actions Trello
+- **Butler Trigger :** "When a card is moved to 'To Sign', trigger eZsign Signature Request" utilisant `Ezsigndocument_CreateObject_V2`.
+- **Card Updates :** Les webhooks eZsign mettent à jour le statut de la signature via des commentaires ou étiquettes.

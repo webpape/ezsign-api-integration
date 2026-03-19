@@ -1,31 +1,41 @@
 # Asana Connector Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth2 (Asana App)
-- **Scopes :** `default`
-- **Logic eZsign :** Gestion du cycle de vie des tâches Asana en fonction des documents signés.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign :
-  - `document.signed` -> Marquer la tâche Asana comme "Terminée".
-  - `document.completed` -> Ajouter un commentaire : "🏁 Le document a été signé et archivé."
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Mise à jour de la tâche Asana.
+- `document.completed` -> Signature et archivage automatique dans la section Fichiers d'Asana.
 
-## Actions
-1. **Create Task with Signature :** Créer une tâche Asana contenant la demande de signature eZsign.
-2. **Attach File :** Joindre le document PDF final à la tâche Asana correspondante.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Asana Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérification de la session active Asana-eZsign.
 
-## 1. Create a Developer App
-1. Go to [app.asana.com/0/developer-console](https://app.asana.com/0/developer-console).
-2. Create a new app named **eZsign Integration**.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Créer un nouveau document à partir d'une tâche Asana.
 
-## 2. Configure OAuth2
-1. Redirect URI: `https://your-server.com/asana/auth`.
-2. Scopes: `default`.
+### 3. Ezsigndocument_ApplyEzsigntemplate_V2
+- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
+- **Summary :** Appliquer un template eZsign prédéfini (ex: Accord de Collaboration).
 
-## 3. Deployment
-1. Copy the **Client ID** and **Client Secret**.
-2. Configure the OAuth2 URLs:
-   - Auth: `https://app.asana.com/-/oauth_authorize`
-   - Token: `https://app.asana.com/-/oauth_token`
+### 4. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Récupérer l'URL de téléchargement sécurisée (expire après 5 min).
+
+### 5. Ezsignfoldersignerassociation_CreateObject_V2
+- **POST** `/2/object/ezsignfoldersignerassociation`
+- **Summary :** Associer un signataire (Assigné de la tâche Asana).
+
+### 6. Ezsigntemplate_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
+- **Summary :** Lister les templates disponibles dans les automatisations Asana.
+
+## Actions Asana
+- **Trigger Signature Flow :** Déclenché par une règle Asana utilisant `Ezsigndocument_CreateObject_V2`.
+- **Status Sync :** Les webhooks eZsign mettent à jour le champ personnalisé Asana "Signature Status".

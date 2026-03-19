@@ -1,32 +1,41 @@
-# Jira Connector Integration - eZsign
+# Jira, ClickUp, Trello & Asana Connectors Integration - eZsign
 
 ## Authentification
-- **Méthode :** OAuth2 (Atlassian Connect / OAuth 2.0 (3LO))
-- **Scopes :** `read:jira-work`, `write:jira-work`, `manage:jira-configuration`
-- **Logic eZsign :** Transition de l'état d'un ticket Jira lors de la signature d'un document.
+- **Méthode :** OAuth2
+- **Authorization URL :** `https://api.ezsign.ca/oauth/authorize`
+- **Token URL :** `https://api.ezsign.ca/oauth/token`
 
 ## Webhooks
-- S'abonner aux Webhooks eZsign :
-  - `document.signed` -> Transférer le ticket Jira vers l'état "Fermé" ou "Terminé".
-  - `document.rejected` -> Ajouter un commentaire au ticket : "❌ Signature rejetée par le client."
+Logic synchronisée avec eZsign Power Automate :
+- `document.signed` -> Transition d'état de la tâche/ticket (ex: To Do -> In Progress).
+- `document.completed` -> Signature finale et archivage du PDF dans l'outil.
 
-## Actions
-1. **Create Issue with Signature :** Créer un ticket Jira incluant une transaction eZsign.
-2. **Attach Signed PDF :** Joindre le document final à la section "Attachments" du ticket.
+## Endpoints (Specs issues d'eZmax API Definition)
 
-# Jira Connector Installation Instructions
+### 1. Activesession_GetCurrent_V2
+- **GET** `/2/object/activesession/getCurrent`
+- **Summary :** Vérifier les permissions de l'application de gestion de projet.
 
-## 1. Create an Atlassian App
-1. Go to the [Atlassian Developer Console](https://developer.atlassian.com/console/myapps/).
-2. Create a new "OAuth 2.0 (3LO)" app named **eZsign Jira Integration**.
+### 2. Ezsigndocument_CreateObject_V2
+- **POST** `/2/object/ezsigndocument`
+- **Summary :** Créer un document à partir d'un ticket ou d'une tâche existante.
 
-## 2. Configure Permissions
-1. Add **Jira Platform REST API** permissions:
-   - `read:jira-work`
-   - `write:jira-work`
+### 3. Ezsigndocument_ApplyEzsigntemplate_V2
+- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
+- **Summary :** Appliquer un template eZsign (ex: Spécifications Techniques).
 
-## 3. Deployment
-1. Copy the **Client ID** and **Client Secret**.
-2. Configure the OAuth2 URLs:
-   - Auth: `https://auth.atlassian.com/authorize`
-   - Token: `https://auth.atlassian.com/oauth/token`
+### 4. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Obtenir le lien de téléchargement (Original, Signed, Proof, etc.).
+
+### 5. Ezsignfoldersignerassociation_CreateObject_V2
+- **POST** `/2/object/ezsignfoldersignerassociation`
+- **Summary :** Associer un signataire (Assigné de la tâche ou Contact associé).
+
+### 6. Ezsigntemplate_GetAutocomplete_V2
+- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
+- **Summary :** Lister les templates disponibles dans les automatisations de projet.
+
+## Actions Project Management
+- **Issue/Task Sync :** Utilise les webhooks eZsign pour déclencher des commentaires automatiques sur le ticket.
+- **Bot Interactions :** Commande `/ezsign-check` pour vérifier le statut de la signature.
