@@ -1,0 +1,31 @@
+{
+  "name": "eZsign",
+  "base": "https://api.ezsign.ca/v1",
+  "auth": {
+    "type": "oauth2",
+    "spec": {
+      "authorize": "https://api.ezsign.ca/oauth/authorize",
+      "token": "https://api.ezsign.ca/oauth/token"
+    }
+  },
+  "modules": [
+    {
+      "name": "watch_documents",
+      "type": "webhook",
+      "label": "Watch Documents Signed",
+      "output": {
+        "parameters": [
+          { "name": "document_id", "type": "string" },
+          { "name": "status", "type": "string" }
+        ]
+      }
+    }
+  ],
+  "common": {
+    "parameters": {
+      "headers": {
+        "Authorization": "Bearer {{connection.accessToken}}"
+      }
+    }
+  }
+}

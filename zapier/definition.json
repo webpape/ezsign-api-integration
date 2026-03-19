@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "name": "eZsign Connector",
+  "auth": {
+    "type": "oauth2",
+    "params": {
+      "authorize_url": "https://api.ezsign.ca/oauth/authorize",
+      "token_url": "https://api.ezsign.ca/oauth/token",
+      "scopes": ["repo", "workflow", "read:user"]
+    }
+  },
+  "triggers": [
+    {
+      "key": "document_signed",
+      "label": "Document Signed",
+      "description": "Triggers when a document is fully signed.",
+      "type": "hook",
+      "hook_url": "{{webhook_url}}"
+    }
+  ],
+  "actions": [
+    {
+      "key": "create_transaction",
+      "label": "Create Transaction",
+      "description": "Starts a new signature process.",
+      "inputs": [
+        { "key": "filename", "type": "string", "required": true },
+        { "key": "signers", "type": "array", "required": true }
+      ]
+    }
+  ]
+}
