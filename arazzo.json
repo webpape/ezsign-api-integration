@@ -1,0 +1,840 @@
+{
+  "arazzo": "1.0.1",
+  "info": {
+    "title": "eZsign API Workflows",
+    "summary": "Arazzo workflows describing the eZmax/eZsign API operations for integration platforms.",
+    "description": "Auto-generated Arazzo specification from the eZmax API Definition (PowerAutomate) swagger.\nSource version: 1.3.0\nGenerated at: 2026-03-24T00:21:45.757Z",
+    "version": "1.3.0"
+  },
+  "sourceDescriptions": [
+    {
+      "name": "ezsignApi",
+      "url": "./swagger.json",
+      "type": "openapi"
+    }
+  ],
+  "workflows": [
+    {
+      "workflowId": "session-management",
+      "summary": "Session Management",
+      "description": "Workflow for managing active sessions and retrieving current session details.",
+      "steps": [
+        {
+          "stepId": "activesession-get-current-v1",
+          "description": "Get Current Activesession",
+          "operationId": "Activesession_GetCurrent_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "activesession-get-current-v2",
+          "description": "Get Current Activesession",
+          "operationId": "Activesession_GetCurrent_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        }
+      ],
+      "outputs": {
+        "activesession-get-current-v1-result": "$steps.activesession-get-current-v1.outputs.responseBody",
+        "activesession-get-current-v2-result": "$steps.activesession-get-current-v2.outputs.responseBody"
+      }
+    },
+    {
+      "workflowId": "ezsignfolder-lifecycle",
+      "summary": "Ezsignfolder Lifecycle Management",
+      "description": "Workflow covering the full lifecycle of an Ezsignfolder: creation, signer association, document ordering, sending for signature, and disposal.",
+      "steps": [
+        {
+          "stepId": "ezsignfolder-dispose-v1",
+          "description": "Dispose the Ezsignfolder",
+          "operationId": "Ezsignfolder_Dispose_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsignfolderID",
+              "in": "path",
+              "value": "$inputs.pkiEzsignfolderID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfolder-get-ezsigndocuments-v1",
+          "description": "Retrieve an existing Ezsignfolder's Ezsigndocuments",
+          "operationId": "Ezsignfolder_GetEzsigndocuments_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsignfolderID",
+              "in": "path",
+              "value": "$inputs.pkiEzsignfolderID"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfolder-create-object-v2",
+          "description": "Create a new Ezsignfolder",
+          "operationId": "Ezsignfolder_CreateObject_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 201"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfolder-get-ezsigndocuments-v2",
+          "description": "Retrieve an existing Ezsignfolder's Ezsigndocuments",
+          "operationId": "Ezsignfolder_GetEzsigndocuments_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsignfolderID",
+              "in": "path",
+              "value": "$inputs.pkiEzsignfolderID"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfolder-reorder-v2",
+          "description": "Reorder Ezsigndocuments in the Ezsignfolder",
+          "operationId": "Ezsignfolder_Reorder_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsignfolderID",
+              "in": "path",
+              "value": "$inputs.pkiEzsignfolderID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfoldersignerassociation-create-object-v2",
+          "description": "Create a new Ezsignfoldersignerassociation",
+          "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 201"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfolder-create-object-v3",
+          "description": "Create a new Ezsignfolder",
+          "operationId": "Ezsignfolder_CreateObject_V3",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 201"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsignfolder-send-v3",
+          "description": "Send the Ezsignfolder to the signatories for signature",
+          "operationId": "Ezsignfolder_Send_V3",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsignfolderID",
+              "in": "path",
+              "value": "$inputs.pkiEzsignfolderID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        }
+      ],
+      "outputs": {
+        "ezsignfolder-dispose-v1-result": "$steps.ezsignfolder-dispose-v1.outputs.responseBody",
+        "ezsignfolder-get-ezsigndocuments-v1-result": "$steps.ezsignfolder-get-ezsigndocuments-v1.outputs.responseBody",
+        "ezsignfolder-create-object-v2-result": "$steps.ezsignfolder-create-object-v2.outputs.responseBody",
+        "ezsignfolder-get-ezsigndocuments-v2-result": "$steps.ezsignfolder-get-ezsigndocuments-v2.outputs.responseBody",
+        "ezsignfolder-reorder-v2-result": "$steps.ezsignfolder-reorder-v2.outputs.responseBody",
+        "ezsignfoldersignerassociation-create-object-v2-result": "$steps.ezsignfoldersignerassociation-create-object-v2.outputs.responseBody",
+        "ezsignfolder-create-object-v3-result": "$steps.ezsignfolder-create-object-v3.outputs.responseBody",
+        "ezsignfolder-send-v3-result": "$steps.ezsignfolder-send-v3.outputs.responseBody"
+      }
+    },
+    {
+      "workflowId": "ezsigndocument-management",
+      "summary": "Ezsigndocument Management",
+      "description": "Workflow for managing Ezsigndocuments: creation, applying templates, positioning elements by word, prefilling forms, and downloading signed documents.",
+      "steps": [
+        {
+          "stepId": "ezsigndocument-apply-ezsigntemplateglobal-v1",
+          "description": "Apply an Ezsigntemplateglobal to the Ezsigndocument",
+          "operationId": "Ezsigndocument_ApplyEzsigntemplateglobal_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsigndocumentID",
+              "in": "path",
+              "value": "$inputs.pkiEzsigndocumentID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-create-ezsignelements-positioned-by-word-v1",
+          "description": "Create multiple Ezsignsignatures/Ezsignformfieldgroups",
+          "operationId": "Ezsigndocument_CreateEzsignelementsPositionedByWord_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsigndocumentID",
+              "in": "path",
+              "value": "$inputs.pkiEzsigndocumentID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-get-download-url-v1",
+          "description": "Retrieve a URL to download documents",
+          "operationId": "Ezsigndocument_GetDownloadUrl_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsigndocumentID",
+              "in": "path",
+              "value": "$inputs.pkiEzsigndocumentID"
+            },
+            {
+              "name": "eDocumentType",
+              "in": "path",
+              "value": "$inputs.eDocumentType"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-prefill-ezsignform-v1",
+          "description": "Prefill an Ezsignform",
+          "operationId": "Ezsigndocument_PrefillEzsignform_V1",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsigndocumentID",
+              "in": "path",
+              "value": "$inputs.pkiEzsigndocumentID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-create-object-v2",
+          "description": "Create a new Ezsigndocument",
+          "operationId": "Ezsigndocument_CreateObject_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 201"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-apply-ezsigntemplate-v2",
+          "description": "Apply an Ezsigntemplate to the Ezsigndocument",
+          "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsigndocumentID",
+              "in": "path",
+              "value": "$inputs.pkiEzsigndocumentID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-create-ezsignelements-positioned-by-word-v2",
+          "description": "Create multiple Ezsignsignatures/Ezsignformfieldgroups",
+          "operationId": "Ezsigndocument_CreateEzsignelementsPositionedByWord_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "pkiEzsigndocumentID",
+              "in": "path",
+              "value": "$inputs.pkiEzsigndocumentID"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigndocument-create-object-v3",
+          "description": "Create a new Ezsigndocument",
+          "operationId": "Ezsigndocument_CreateObject_V3",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 201"
+            }
+          ],
+          "requestBody": {
+            "contentType": "application/json",
+            "payload": "$inputs.requestBody"
+          },
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        }
+      ],
+      "outputs": {
+        "ezsigndocument-apply-ezsigntemplateglobal-v1-result": "$steps.ezsigndocument-apply-ezsigntemplateglobal-v1.outputs.responseBody",
+        "ezsigndocument-create-ezsignelements-positioned-by-word-v1-result": "$steps.ezsigndocument-create-ezsignelements-positioned-by-word-v1.outputs.responseBody",
+        "ezsigndocument-get-download-url-v1-result": "$steps.ezsigndocument-get-download-url-v1.outputs.responseBody",
+        "ezsigndocument-prefill-ezsignform-v1-result": "$steps.ezsigndocument-prefill-ezsignform-v1.outputs.responseBody",
+        "ezsigndocument-create-object-v2-result": "$steps.ezsigndocument-create-object-v2.outputs.responseBody",
+        "ezsigndocument-apply-ezsigntemplate-v2-result": "$steps.ezsigndocument-apply-ezsigntemplate-v2.outputs.responseBody",
+        "ezsigndocument-create-ezsignelements-positioned-by-word-v2-result": "$steps.ezsigndocument-create-ezsignelements-positioned-by-word-v2.outputs.responseBody",
+        "ezsigndocument-create-object-v3-result": "$steps.ezsigndocument-create-object-v3.outputs.responseBody"
+      }
+    },
+    {
+      "workflowId": "autocomplete-lookups",
+      "summary": "Autocomplete Lookups",
+      "description": "Workflow for all autocomplete/dropdown lookup endpoints: foldertypes, templates, template packages, TSA requirements, languages, secret questions, tax assignments, users, and user login types.",
+      "steps": [
+        {
+          "stepId": "ezsignfoldertype-get-autocomplete-v2",
+          "description": "Retrieve Ezsignfoldertypes and IDs",
+          "operationId": "Ezsignfoldertype_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigntemplate-get-autocomplete-v2",
+          "description": "Retrieve Ezsigntemplates and IDs",
+          "operationId": "Ezsigntemplate_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            },
+            {
+              "name": "fkiEzsignfoldertypeID",
+              "in": "query",
+              "value": "$inputs.fkiEzsignfoldertypeID"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigntemplateglobal-get-autocomplete-v2",
+          "description": "Retrieve Ezsigntemplateglobals and IDs",
+          "operationId": "Ezsigntemplateglobal_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigntemplatepackage-get-autocomplete-v2",
+          "description": "Retrieve Ezsigntemplatepackages and IDs",
+          "operationId": "Ezsigntemplatepackage_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            },
+            {
+              "name": "fkiEzsignfoldertypeID",
+              "in": "query",
+              "value": "$inputs.fkiEzsignfoldertypeID"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "ezsigntsarequirement-get-autocomplete-v2",
+          "description": "Retrieve Ezsigntsarequirements and IDs",
+          "operationId": "Ezsigntsarequirement_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "fkiEzsignfoldertypeID",
+              "in": "query",
+              "value": "$inputs.fkiEzsignfoldertypeID"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "language-get-autocomplete-v2",
+          "description": "Retrieve Languages and IDs",
+          "operationId": "Language_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "secretquestion-get-autocomplete-v2",
+          "description": "Retrieve Secretquestions and IDs",
+          "operationId": "Secretquestion_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "taxassignment-get-autocomplete-v2",
+          "description": "Retrieve Taxassignments and IDs",
+          "operationId": "Taxassignment_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "user-get-autocomplete-v2",
+          "description": "Retrieve Users and IDs",
+          "operationId": "User_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        },
+        {
+          "stepId": "userlogintype-get-autocomplete-v2",
+          "description": "Retrieve Userlogintypes and IDs",
+          "operationId": "Userlogintype_GetAutocomplete_V2",
+          "successCriteria": [
+            {
+              "condition": "$statusCode == 200"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "sSelector",
+              "in": "path",
+              "value": "$inputs.sSelector"
+            },
+            {
+              "name": "fkiEzsignfoldertypeID",
+              "in": "query",
+              "value": "$inputs.fkiEzsignfoldertypeID"
+            },
+            {
+              "name": "eFilterActive",
+              "in": "query",
+              "value": "$inputs.eFilterActive"
+            },
+            {
+              "name": "sQuery",
+              "in": "query",
+              "value": "$inputs.sQuery"
+            },
+            {
+              "name": "Accept-Language",
+              "in": "header",
+              "value": "$inputs.Accept-Language"
+            }
+          ],
+          "outputs": {
+            "responseBody": "$response.body"
+          }
+        }
+      ],
+      "outputs": {
+        "ezsignfoldertype-get-autocomplete-v2-result": "$steps.ezsignfoldertype-get-autocomplete-v2.outputs.responseBody",
+        "ezsigntemplate-get-autocomplete-v2-result": "$steps.ezsigntemplate-get-autocomplete-v2.outputs.responseBody",
+        "ezsigntemplateglobal-get-autocomplete-v2-result": "$steps.ezsigntemplateglobal-get-autocomplete-v2.outputs.responseBody",
+        "ezsigntemplatepackage-get-autocomplete-v2-result": "$steps.ezsigntemplatepackage-get-autocomplete-v2.outputs.responseBody",
+        "ezsigntsarequirement-get-autocomplete-v2-result": "$steps.ezsigntsarequirement-get-autocomplete-v2.outputs.responseBody",
+        "language-get-autocomplete-v2-result": "$steps.language-get-autocomplete-v2.outputs.responseBody",
+        "secretquestion-get-autocomplete-v2-result": "$steps.secretquestion-get-autocomplete-v2.outputs.responseBody",
+        "taxassignment-get-autocomplete-v2-result": "$steps.taxassignment-get-autocomplete-v2.outputs.responseBody",
+        "user-get-autocomplete-v2-result": "$steps.user-get-autocomplete-v2.outputs.responseBody",
+        "userlogintype-get-autocomplete-v2-result": "$steps.userlogintype-get-autocomplete-v2.outputs.responseBody"
+      }
+    },
+    {
+      "workflowId": "communication",
+      "summary": "Communication Management",
+      "description": "Workflow for retrieving communication body content.",
+      "steps": [
+        {
+          "stepId": "communication-get-communication-body-v1",
+          "description": "Retrieve the communication body",
+          "operationId": "Communication_GetCommunicationBody_V1",
+          "successCriteria": [],
+          "parameters": [
+            {
+              "name": "pkiCommunicationID",
+              "in": "path",
+              "value": "$inputs.pkiCommunicationID"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

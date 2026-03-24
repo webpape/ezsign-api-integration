@@ -1,0 +1,92 @@
+{
+  "version": "1.3.0",
+  "platform": "Monday.com",
+  "source": "arazzo",
+  "generatedAt": "2026-03-24T00:22:47.671Z",
+  "webhooks": [
+    {
+      "key": "document_signed",
+      "event": "document.signed",
+      "label": "document.signed",
+      "description": "Changement de statut d'une cellule Monday.com."
+    },
+    {
+      "key": "document_completed",
+      "event": "document.completed",
+      "label": "document.completed",
+      "description": "Mise à jour du lien de signature dans la colonne \"Lien\" de Monday."
+    }
+  ],
+  "actions": [
+    {
+      "key": "activesession_getcurrent_v2",
+      "label": "Get Current Activesession",
+      "description": "Vérifier la validité de la session d'intégration Monday.",
+      "operationId": "Activesession_GetCurrent_V2",
+      "method": "GET",
+      "path": "/2/object/activesession/getCurrent",
+      "workflowId": "session-management",
+      "hasParameters": false,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsignfoldersignerassociation_createobject_v2",
+      "label": "Create a new Ezsignfoldersignerassociation",
+      "description": "Associer un signataire (Contact dans une colonne Monday) à un dossier.",
+      "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
+      "method": "POST",
+      "path": "/2/object/ezsignfoldersignerassociation",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsigndocument_getdownloadurl_v1",
+      "label": "Retrieve a URL to download documents",
+      "description": "Récupérer l'URL de téléchargement sécurisée pour Monday Files.",
+      "operationId": "Ezsigndocument_GetDownloadUrl_V1",
+      "method": "GET",
+      "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": true,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsigndocument_createobject_v2",
+      "label": "Create a new Ezsigndocument",
+      "description": "Créer un nouveau document à partir d'une ligne d'un tableau Monday.",
+      "operationId": "Ezsigndocument_CreateObject_V2",
+      "method": "POST",
+      "path": "/2/object/ezsigndocument",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsigndocument_applyezsigntemplate_v2",
+      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
+      "description": "Appliquer un template eZsign prédéfini (ex: Document RH).",
+      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
+      "method": "POST",
+      "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsigntemplate_getautocomplete_v2",
+      "label": "Retrieve Ezsigntemplates and IDs",
+      "description": "Lister les templates disponibles dans les automatisations Monday.",
+      "operationId": "Ezsigntemplate_GetAutocomplete_V2",
+      "method": "GET",
+      "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
+      "workflowId": "autocomplete-lookups",
+      "hasParameters": true,
+      "hasRequestBody": false
+    }
+  ],
+  "platformActions": [
+    "Trigger Signature: Automatisation du type \"When Status changes, trigger eZsign Signature Request\" utilisant `Ezsigndocument_CreateObject_V2`.",
+    "Status Sync: Les webhooks eZsign mettent à jour la colonne Monday \"Signature Status\"."
+  ]
+}

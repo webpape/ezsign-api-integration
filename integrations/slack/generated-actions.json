@@ -1,0 +1,81 @@
+{
+  "version": "1.3.0",
+  "platform": "Slack & Microsoft Teams",
+  "source": "arazzo",
+  "generatedAt": "2026-03-24T00:22:52.006Z",
+  "webhooks": [
+    {
+      "key": "document_signed",
+      "event": "document.signed",
+      "label": "document.signed",
+      "description": "Envoi automatique de notifications (Adaptive Cards pour Teams, Block Kit pour Slack)."
+    },
+    {
+      "key": "document_completed",
+      "event": "document.completed",
+      "label": "document.completed",
+      "description": "Message final incluant le lien de téléchargement."
+    }
+  ],
+  "actions": [
+    {
+      "key": "activesession_getcurrent_v2",
+      "label": "Get Current Activesession",
+      "description": "Vérifier les permissions de l'application Slack/Teams intégrée.",
+      "operationId": "Activesession_GetCurrent_V2",
+      "method": "GET",
+      "path": "/2/object/activesession/getCurrent",
+      "workflowId": "session-management",
+      "hasParameters": false,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsigndocument_getdownloadurl_v1",
+      "label": "Retrieve a URL to download documents",
+      "description": "Fournir un lien de téléchargement sécurisé directement dans le canal de communication.",
+      "operationId": "Ezsigndocument_GetDownloadUrl_V1",
+      "method": "GET",
+      "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": true,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsigndocument_createobject_v2",
+      "label": "Create a new Ezsigndocument",
+      "description": "Déclencher une signature via une commande Slash ou Message Shortcut.",
+      "operationId": "Ezsigndocument_CreateObject_V2",
+      "method": "POST",
+      "path": "/2/object/ezsigndocument",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsignfoldertype_getautocomplete_v2",
+      "label": "Retrieve Ezsignfoldertypes and IDs",
+      "description": "Liste déroulante des types de dossiers dans les formulaires de création.",
+      "operationId": "Ezsignfoldertype_GetAutocomplete_V2",
+      "method": "GET",
+      "path": "/2/object/ezsignfoldertype/getAutocomplete/{sSelector}",
+      "workflowId": "autocomplete-lookups",
+      "hasParameters": true,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsigntemplateglobal_getautocomplete_v2",
+      "label": "Retrieve Ezsigntemplateglobals and IDs",
+      "description": "Sélectionner un template global eZmax pour les documents standards.",
+      "operationId": "Ezsigntemplateglobal_GetAutocomplete_V2",
+      "method": "GET",
+      "path": "/2/object/ezsigntemplateglobal/getAutocomplete/{sSelector}",
+      "workflowId": "autocomplete-lookups",
+      "hasParameters": true,
+      "hasRequestBody": false
+    }
+  ],
+  "platformActions": [
+    "Real-time Alert: Utilise les webhooks eZsign mappés vers l'API de messagerie.",
+    "Bot Interactions: Commande `/ezsign-status` utilisant `Ezsigndocument_GetDownloadUrl_V1`."
+  ]
+}

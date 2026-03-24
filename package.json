@@ -3,6 +3,7 @@
   "packageManager": "yarn@4.13.0",
   "type": "module",
   "scripts": {
+    "gen:arazzo": "tsx scripts/generate-arazzo.ts",
     "sync": "tsx scripts/sync-swagger.ts",
     "docs": "tsx scripts/update-docs.ts",
     "generate": "tsx scripts/generate-all.ts",

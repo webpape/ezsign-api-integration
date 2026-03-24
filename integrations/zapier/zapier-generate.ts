@@ -1,33 +1,49 @@
 import fs from 'fs-extra';
-import path from 'path';
-import { SWAGGER_LOCAL_PATH } from '../../src/constants.js';
+import {
+  loadArazzo,
+  buildIntegrationActions,
+  getStandardTriggers,
+} from '../../src/arazzo-helpers.js';
 
 async function generateZapier() {
-  const swaggerPath = path.resolve('../../', SWAGGER_LOCAL_PATH);
-  const definitionPath = './definition.json';
+  const arazzo = await loadArazzo();
+  const actions = buildIntegrationActions(arazzo);
+  const triggers = getStandardTriggers();
 
-  if (!await fs.pathExists(swaggerPath)) {
-    console.error('Swagger file not found at', swaggerPath);
-    return;
-  }
+  console.log(`[Zapier] Using Arazzo version: ${arazzo.info.version}`);
 
-  const swagger = await fs.readJson(swaggerPath);
-  const definition = await fs.readJson(definitionPath);
+  const definition = {
+    version: arazzo.info.version,
+    name: 'eZsign Connector',
+    auth: {
+      type: 'oauth2',
+      params: {
+        authorize_url:
+          'https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/authorize',
+        token_url:
+          'https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/token',
+        scopes: ['repo', 'workflow', 'read:user'],
+      },
+    },
+    triggers: triggers.map(t => ({
+      key: t.key,
+      label: t.label,
+      description: t.description,
+      type: 'hook',
+      hook_url: '{{webhook_url}}',
+      operationId: t.operationId,
+    })),
+    actions: actions.map(a => ({
+      key: a.operationId.toLowerCase(),
+      label: a.label,
+      description: a.description,
+      operationId: a.operationId,
+    })),
+  };
 
-  console.log(`[Zapier] Using Swagger version: ${swagger.info.version}`);
-
-  // Example: Update definition version to match swagger version (or some logic)
-  definition.version = swagger.info.version;
-
-  // Example: Sync descriptions for actions listed in definition.json
-  for (const action of definition.actions) {
-    // In a real scenario, you'd find the path/method in swagger based on operationId
-    // For now, we'll just log that we are syncing.
-    console.log(`[Zapier] Syncing action: ${action.operationId}`);
-  }
-
-  await fs.writeJson(definitionPath, definition, { spaces: 2 });
-  console.log('[Zapier] definition.json updated.');
+  const outputPath = new URL('./definition.json', import.meta.url).pathname;
+  await fs.writeJson(outputPath, definition, { spaces: 2 });
+  console.log(`[Zapier] definition.json updated with ${actions.length} actions, ${triggers.length} triggers.`);
 }
 
 generateZapier();

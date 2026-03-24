@@ -1,0 +1,92 @@
+{
+  "version": "1.3.0",
+  "platform": "NetSuite",
+  "source": "arazzo",
+  "generatedAt": "2026-03-24T00:22:48.524Z",
+  "webhooks": [
+    {
+      "key": "document_signed",
+      "event": "document.signed",
+      "label": "document.signed",
+      "description": "Mise à jour du Custom Record NetSuite."
+    },
+    {
+      "key": "document_completed",
+      "event": "document.completed",
+      "label": "document.completed",
+      "description": "Signature finale et archivage du PDF dans le File Cabinet de NetSuite."
+    }
+  ],
+  "actions": [
+    {
+      "key": "activesession_getcurrent_v2",
+      "label": "Get Current Activesession",
+      "description": "Authentification de la session NetSuite.",
+      "operationId": "Activesession_GetCurrent_V2",
+      "method": "GET",
+      "path": "/2/object/activesession/getCurrent",
+      "workflowId": "session-management",
+      "hasParameters": false,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsignfoldersignerassociation_createobject_v2",
+      "label": "Create a new Ezsignfoldersignerassociation",
+      "description": "Associer un signataire (Entity/Customer NetSuite).",
+      "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
+      "method": "POST",
+      "path": "/2/object/ezsignfoldersignerassociation",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsigndocument_getdownloadurl_v1",
+      "label": "Retrieve a URL to download documents",
+      "description": "Fournir l'URL de téléchargement sécurisée.",
+      "operationId": "Ezsigndocument_GetDownloadUrl_V1",
+      "method": "GET",
+      "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": true,
+      "hasRequestBody": false
+    },
+    {
+      "key": "ezsigndocument_createobject_v2",
+      "label": "Create a new Ezsigndocument",
+      "description": "Action de création de document à partir d'un Sales Order ou Invoice NetSuite.",
+      "operationId": "Ezsigndocument_CreateObject_V2",
+      "method": "POST",
+      "path": "/2/object/ezsigndocument",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsigndocument_applyezsigntemplate_v2",
+      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
+      "description": "Appliquer un template eZsign.",
+      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
+      "method": "POST",
+      "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
+      "workflowId": "ezsigndocument-management",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsigntemplate_getautocomplete_v2",
+      "label": "Retrieve Ezsigntemplates and IDs",
+      "description": "Lister les templates pour sélection dans SuiteScript.",
+      "operationId": "Ezsigntemplate_GetAutocomplete_V2",
+      "method": "GET",
+      "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
+      "workflowId": "autocomplete-lookups",
+      "hasParameters": true,
+      "hasRequestBody": false
+    }
+  ],
+  "platformActions": [
+    "SuiteScript Integration: Déclenché via un bouton ou User Event Script.",
+    "Dynamic Webhooks: Abonnement via RESTlets NetSuite."
+  ]
+}
