@@ -1,4 +1,18 @@
-# Asana Connector Integration - eZsign
+# Asana Integration - eZsign
+
+## Cas d'usage métiers
+- **Ventes & CRM :** Générez des contrats de vente directement depuis vos tâches Asana pour signature rapide.
+- **RH & Onboarding :** Envoyez des documents d'embauche et des politiques d'entreprise aux nouveaux employés.
+- **Gestion de Projet :** Faites approuver des jalons de projet ou des changements de portée par vos clients.
+
+## Procédure d'installation
+1. **Accès Développeur :** Connectez-vous à la [Console Développeur Asana](https://app.asana.com/0/developer-console).
+2. **Créer une App :** Cliquez sur "Nouvelle application". Nommez-la "eZsign Integration".
+3. **Configuration OAuth2 :** 
+   - Ajoutez l'URL de redirection fournie par votre instance eZsign.
+   - Notez le `Client ID` et le `Client Secret`.
+4. **Importation des Actions :** Utilisez le fichier `generated-actions.json` de ce dossier pour configurer vos triggers et actions dans l'interface de connecteur d'Asana.
+5. **Test :** Utilisez l'action "Vérification de la session" pour valider la connexion.
 
 ## Authentification
 - **Méthode :** OAuth2
@@ -7,43 +21,31 @@
 
 ## Webhooks
 Logic synchronisée avec eZsign Power Automate :
-- `document.signed` -> Mise à jour de la tâche Asana.
-- `document.completed` -> Signature et archivage automatique dans la section Fichiers d'Asana.
+- `ezsignfolder.completed` -> Marquer la tâche Asana comme "Terminée".
+- `ezsigndocument.completed` -> Attacher le document signé à la tâche Asana.
 
 ## Endpoints (Specs issues d'eZmax API Definition)
 
 ### 1. Activesession_GetCurrent_V2
 - **GET** `/2/object/activesession/getCurrent`
-- **Summary :** Vérification de la session active Asana-eZsign.
+- **Summary :** Vérification de la session active entre Asana et eZsign.
 
-### 2. Ezsigndocument_CreateObject_V2
-- **POST** `/2/object/ezsigndocument`
-- **Summary :** Créer un nouveau document à partir d'une tâche Asana.
+### 2. Ezsignfolder_CreateObject_V3
+- **POST** `/3/object/ezsignfolder`
+- **Summary :** Créer un nouveau dossier de signature à partir d'un projet Asana.
 
-### 3. Ezsigndocument_ApplyEzsigntemplate_V2
-- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
-- **Summary :** Appliquer un template eZsign prédéfini (ex: Accord de Collaboration).
+### 3. Ezsigndocument_CreateObject_V3
+- **POST** `/3/object/ezsigndocument`
+- **Summary :** Ajouter un document à signer à partir d'une pièce jointe Asana.
 
-### 4. Ezsigndocument_GetDownloadUrl_V1
-- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
-- **Summary :** Récupérer l'URL de téléchargement sécurisée (expire après 5 min).
-
-### 5. Ezsignfoldersignerassociation_CreateObject_V2
+### 4. Ezsignfoldersignerassociation_CreateObject_V2
 - **POST** `/2/object/ezsignfoldersignerassociation`
-- **Summary :** Associer un signataire (Assigné de la tâche Asana).
+- **Summary :** Associer un signataire (utilisant l'email d'un collaborateur Asana).
 
-### 6. Ezsigntemplate_GetAutocomplete_V2
-- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
-- **Summary :** Lister les templates disponibles dans les automatisations Asana.
+### 5. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Récupérer le document signé pour l'importer dans Asana.
 
 ## Actions Asana
-- **Trigger Signature Flow :** Déclenché par une règle Asana utilisant `Ezsigndocument_CreateObject_V2`.
-- **Status Sync :** Les webhooks eZsign mettent à jour le champ personnalisé Asana "Signature Status".
-
-
-## Procédure pour créer un connecteur Asana
-1. Accédez au portail développeur de Asana.
-2. Créez une nouvelle intégration / application.
-3. Importez le fichier `swagger.json` de ce dossier pour définir les points de terminaison.
-4. Configurez l'authentification (OAuth2 ou Clé API) en utilisant les paramètres eZmax.
-5. Testez la connexion avec l'endpoint `/2/object/activesession/getCurrent`.
+- **Trigger Signature Flow :** Déclenché lorsqu'une tâche est déplacée dans la section "À Signer".
+- **Status Sync :** Mise à jour automatique des champs personnalisés "Statut eZsign" via webhooks.

@@ -1,27 +1,27 @@
 {
   "version": "1.3.0",
-  "platform": "Asana",
+  "platform": "",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:41.619Z",
+  "generatedAt": "2026-03-27T12:14:55.469Z",
   "webhooks": [
     {
-      "key": "document_signed",
-      "event": "document.signed",
-      "label": "document.signed",
-      "description": "Mise à jour de la tâche Asana."
+      "key": "ezsignfolder_completed",
+      "event": "ezsignfolder.completed",
+      "label": "ezsignfolder.completed",
+      "description": "Marquer la tâche Asana comme \"Terminée\"."
     },
     {
-      "key": "document_completed",
-      "event": "document.completed",
-      "label": "document.completed",
-      "description": "Signature et archivage automatique dans la section Fichiers d'Asana."
+      "key": "ezsigndocument_completed",
+      "event": "ezsigndocument.completed",
+      "label": "ezsigndocument.completed",
+      "description": "Attacher le document signé à la tâche Asana."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérification de la session active Asana-eZsign.",
+      "description": "Vérification de la session active entre Asana et eZsign.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +32,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Assigné de la tâche Asana).",
+      "description": "Associer un signataire (utilisant l'email d'un collaborateur Asana).",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +41,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_createobject_v3",
+      "label": "Create a new Ezsignfolder",
+      "description": "Créer un nouveau dossier de signature à partir d'un projet Asana.",
+      "operationId": "Ezsignfolder_CreateObject_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Récupérer l'URL de téléchargement sécurisée (expire après 5 min).",
+      "description": "Récupérer le document signé pour l'importer dans Asana.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -52,41 +63,19 @@
       "hasRequestBody": false
     },
     {
-      "key": "ezsigndocument_createobject_v2",
+      "key": "ezsigndocument_createobject_v3",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un nouveau document à partir d'une tâche Asana.",
-      "operationId": "Ezsigndocument_CreateObject_V2",
+      "description": "Ajouter un document à signer à partir d'une pièce jointe Asana.",
+      "operationId": "Ezsigndocument_CreateObject_V3",
       "method": "POST",
-      "path": "/2/object/ezsigndocument",
+      "path": "/3/object/ezsigndocument",
       "workflowId": "ezsigndocument-management",
       "hasParameters": false,
       "hasRequestBody": true
-    },
-    {
-      "key": "ezsigndocument_applyezsigntemplate_v2",
-      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign prédéfini (ex: Accord de Collaboration).",
-      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
-      "method": "POST",
-      "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
-      "workflowId": "ezsigndocument-management",
-      "hasParameters": true,
-      "hasRequestBody": true
-    },
-    {
-      "key": "ezsigntemplate_getautocomplete_v2",
-      "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates disponibles dans les automatisations Asana.",
-      "operationId": "Ezsigntemplate_GetAutocomplete_V2",
-      "method": "GET",
-      "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
-      "workflowId": "autocomplete-lookups",
-      "hasParameters": true,
-      "hasRequestBody": false
     }
   ],
   "platformActions": [
-    "Trigger Signature Flow: Déclenché par une règle Asana utilisant `Ezsigndocument_CreateObject_V2`.",
-    "Status Sync: Les webhooks eZsign mettent à jour le champ personnalisé Asana \"Signature Status\"."
+    "Trigger Signature Flow: Déclenché lorsqu'une tâche est déplacée dans la section \"À Signer\".",
+    "Status Sync: Mise à jour automatique des champs personnalisés \"Statut eZsign\" via webhooks."
   ]
 }
