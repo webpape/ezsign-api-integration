@@ -1,27 +1,27 @@
 {
   "version": "1.3.0",
-  "platform": "Jira, ClickUp, Trello & Asana",
+  "platform": "",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:45.093Z",
+  "generatedAt": "2026-03-27T12:29:55.684Z",
   "webhooks": [
     {
-      "key": "document_signed",
-      "event": "document.signed",
-      "label": "document.signed",
-      "description": "Transition d'état de la tâche/ticket (ex: To Do -> In Progress)."
+      "key": "ezsignfolder_completed",
+      "event": "ezsignfolder.completed",
+      "label": "ezsignfolder.completed",
+      "description": "Effectuer une transition du ticket Jira (ex: \"En attente\" -> \"Approuvé\")."
     },
     {
-      "key": "document_completed",
-      "event": "document.completed",
-      "label": "document.completed",
-      "description": "Signature finale et archivage du PDF dans l'outil."
+      "key": "ezsigndocument_completed",
+      "event": "ezsigndocument.completed",
+      "label": "ezsigndocument.completed",
+      "description": "Ajouter le PDF signé en pièce jointe au ticket Jira original."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérifier les permissions de l'application de gestion de projet.",
+      "description": "Vérification de la session active entre Jira et eZsign.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +32,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Assigné de la tâche ou Contact associé).",
+      "description": "Associer le \"Reporter\" ou l'\"Assignee\" du ticket comme signataire.",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +41,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_createobject_v3",
+      "label": "Create a new Ezsignfolder",
+      "description": "Créer un dossier de signature à partir d'un Issue Key Jira.",
+      "operationId": "Ezsignfolder_CreateObject_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Obtenir le lien de téléchargement (Original, Signed, Proof, etc.).",
+      "description": "Récupérer le lien pour archiver le document dans Jira.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -52,41 +63,19 @@
       "hasRequestBody": false
     },
     {
-      "key": "ezsigndocument_createobject_v2",
+      "key": "ezsigndocument_createobject_v3",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un document à partir d'un ticket ou d'une tâche existante.",
-      "operationId": "Ezsigndocument_CreateObject_V2",
+      "description": "Créer un document à partir des fichiers attachés au ticket Jira.",
+      "operationId": "Ezsigndocument_CreateObject_V3",
       "method": "POST",
-      "path": "/2/object/ezsigndocument",
+      "path": "/3/object/ezsigndocument",
       "workflowId": "ezsigndocument-management",
       "hasParameters": false,
       "hasRequestBody": true
-    },
-    {
-      "key": "ezsigndocument_applyezsigntemplate_v2",
-      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign (ex: Spécifications Techniques).",
-      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
-      "method": "POST",
-      "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
-      "workflowId": "ezsigndocument-management",
-      "hasParameters": true,
-      "hasRequestBody": true
-    },
-    {
-      "key": "ezsigntemplate_getautocomplete_v2",
-      "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates disponibles dans les automatisations de projet.",
-      "operationId": "Ezsigntemplate_GetAutocomplete_V2",
-      "method": "GET",
-      "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
-      "workflowId": "autocomplete-lookups",
-      "hasParameters": true,
-      "hasRequestBody": false
     }
   ],
   "platformActions": [
-    "Issue/Task Sync: Utilise les webhooks eZsign pour déclencher des commentaires automatiques sur le ticket.",
-    "Bot Interactions: Commande `/ezsign-check` pour vérifier le statut de la signature."
+    "Issue Sync: Ajout automatique de commentaires Jira à chaque changement de statut du dossier eZsign.",
+    "Automation Triggers: Permet de lancer un workflow eZsign via Jira Automation lors d'un changement d'état."
   ]
 }

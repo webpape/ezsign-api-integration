@@ -1,4 +1,18 @@
-# Jira, ClickUp, Trello & Asana Connectors Integration - eZsign
+# Jira Integration - eZsign
+
+## Cas d'usage métiers
+- **Développement Logiciel :** Faites approuver des spécifications techniques ou des plans de test par les parties prenantes avant le début du sprint.
+- **Gestion de Services (JSM) :** Envoyez des formulaires d'approbation de changement ou des accords de niveau de service (SLA) aux clients.
+- **Conformité :** Automatisez la signature de rapports d'audit ou de sécurité liés à des tickets Jira.
+
+## Procédure d'installation
+1. **Console Développeur Atlassian :** Allez sur le [Portail Développeur Atlassian](https://developer.atlassian.com/console/myapps/).
+2. **Créer une App :** Cliquez sur "Create" > "OAuth 2.0 (3LO)". Nommez-la "eZsign for Jira".
+3. **Permissions (Scopes) :** Ajoutez les scopes `read:jira-work` et `write:jira-work`.
+4. **Configuration OAuth2 :** 
+   - Configurez les URLs de rappel (Callback) de votre instance eZsign.
+   - Notez le `Client ID` et le `Secret`.
+5. **Importation :** Utilisez `generated-actions.json` pour configurer les triggers dans Jira Automation ou via une application Forge.
 
 ## Authentification
 - **Méthode :** OAuth2
@@ -7,43 +21,31 @@
 
 ## Webhooks
 Logic synchronisée avec eZsign Power Automate :
-- `document.signed` -> Transition d'état de la tâche/ticket (ex: To Do -> In Progress).
-- `document.completed` -> Signature finale et archivage du PDF dans l'outil.
+- `ezsignfolder.completed` -> Effectuer une transition du ticket Jira (ex: "En attente" -> "Approuvé").
+- `ezsigndocument.completed` -> Ajouter le PDF signé en pièce jointe au ticket Jira original.
 
 ## Endpoints (Specs issues d'eZmax API Definition)
 
 ### 1. Activesession_GetCurrent_V2
 - **GET** `/2/object/activesession/getCurrent`
-- **Summary :** Vérifier les permissions de l'application de gestion de projet.
+- **Summary :** Vérification de la session active entre Jira et eZsign.
 
-### 2. Ezsigndocument_CreateObject_V2
-- **POST** `/2/object/ezsigndocument`
-- **Summary :** Créer un document à partir d'un ticket ou d'une tâche existante.
+### 2. Ezsignfolder_CreateObject_V3
+- **POST** `/3/object/ezsignfolder`
+- **Summary :** Créer un dossier de signature à partir d'un Issue Key Jira.
 
-### 3. Ezsigndocument_ApplyEzsigntemplate_V2
-- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
-- **Summary :** Appliquer un template eZsign (ex: Spécifications Techniques).
+### 3. Ezsigndocument_CreateObject_V3
+- **POST** `/3/object/ezsigndocument`
+- **Summary :** Créer un document à partir des fichiers attachés au ticket Jira.
 
-### 4. Ezsigndocument_GetDownloadUrl_V1
-- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
-- **Summary :** Obtenir le lien de téléchargement (Original, Signed, Proof, etc.).
-
-### 5. Ezsignfoldersignerassociation_CreateObject_V2
+### 4. Ezsignfoldersignerassociation_CreateObject_V2
 - **POST** `/2/object/ezsignfoldersignerassociation`
-- **Summary :** Associer un signataire (Assigné de la tâche ou Contact associé).
+- **Summary :** Associer le "Reporter" ou l'"Assignee" du ticket comme signataire.
 
-### 6. Ezsigntemplate_GetAutocomplete_V2
-- **GET** `/2/object/ezsigntemplate/getAutocomplete/{sSelector}`
-- **Summary :** Lister les templates disponibles dans les automatisations de projet.
+### 5. Ezsigndocument_GetDownloadUrl_V1
+- **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
+- **Summary :** Récupérer le lien pour archiver le document dans Jira.
 
-## Actions Project Management
-- **Issue/Task Sync :** Utilise les webhooks eZsign pour déclencher des commentaires automatiques sur le ticket.
-- **Bot Interactions :** Commande `/ezsign-check` pour vérifier le statut de la signature.
-
-
-## Procédure pour créer un connecteur Jira
-1. Accédez au portail développeur de Jira.
-2. Créez une nouvelle intégration / application.
-3. Importez le fichier `swagger.json` de ce dossier pour définir les points de terminaison.
-4. Configurez l'authentification (OAuth2 ou Clé API) en utilisant les paramètres eZmax.
-5. Testez la connexion avec l'endpoint `/2/object/activesession/getCurrent`.
+## Actions Jira
+- **Issue Sync :** Ajout automatique de commentaires Jira à chaque changement de statut du dossier eZsign.
+- **Automation Triggers :** Permet de lancer un workflow eZsign via Jira Automation lors d'un changement d'état.
