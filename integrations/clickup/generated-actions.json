@@ -1,27 +1,27 @@
 {
   "version": "1.3.0",
-  "platform": "ClickUp",
+  "platform": "",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:42.493Z",
+  "generatedAt": "2026-03-27T12:18:55.301Z",
   "webhooks": [
     {
-      "key": "document_signed",
-      "event": "document.signed",
-      "label": "document.signed",
-      "description": "Mise à jour du Custom Field \"eZsign Status\" dans ClickUp."
+      "key": "ezsignfolder_completed",
+      "event": "ezsignfolder.completed",
+      "label": "ezsignfolder.completed",
+      "description": "Mise à jour du Custom Field \"eZsign Status\" vers \"Signé\"."
     },
     {
-      "key": "document_completed",
-      "event": "document.completed",
-      "label": "document.completed",
-      "description": "Signature finale et téléchargement vers les fichiers de la tâche."
+      "key": "ezsigndocument_completed",
+      "event": "ezsigndocument.completed",
+      "label": "ezsigndocument.completed",
+      "description": "Signature finale et téléchargement vers les pièces jointes de la tâche ClickUp."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérification de la session active ClickUp-eZsign.",
+      "description": "Vérification de la session active entre ClickUp et eZsign.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +32,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Email dans le champ Personne de la tâche ClickUp).",
+      "description": "Associer un signataire (utilisant l'email du champ \"Assigné\" ou un champ personnalisé).",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +41,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_createobject_v3",
+      "label": "Create a new Ezsignfolder",
+      "description": "Créer un nouveau dossier eZsign lié à une tâche ClickUp.",
+      "operationId": "Ezsignfolder_CreateObject_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Récupérer l'URL de téléchargement sécurisée (expire après 5 min).",
+      "description": "Récupérer l'URL du document final pour archivage dans ClickUp.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -52,41 +63,19 @@
       "hasRequestBody": false
     },
     {
-      "key": "ezsigndocument_createobject_v2",
+      "key": "ezsigndocument_createobject_v3",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un nouveau document à partir d'une tâche ClickUp.",
-      "operationId": "Ezsigndocument_CreateObject_V2",
+      "description": "Créer un nouveau document à partir d'un fichier attaché dans ClickUp.",
+      "operationId": "Ezsigndocument_CreateObject_V3",
       "method": "POST",
-      "path": "/2/object/ezsigndocument",
+      "path": "/3/object/ezsigndocument",
       "workflowId": "ezsigndocument-management",
       "hasParameters": false,
       "hasRequestBody": true
-    },
-    {
-      "key": "ezsigndocument_applyezsigntemplate_v2",
-      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign prédéfini (ex: Accord de Collaboration).",
-      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
-      "method": "POST",
-      "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
-      "workflowId": "ezsigndocument-management",
-      "hasParameters": true,
-      "hasRequestBody": true
-    },
-    {
-      "key": "ezsigntemplate_getautocomplete_v2",
-      "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates disponibles dans les automatisations ClickUp.",
-      "operationId": "Ezsigntemplate_GetAutocomplete_V2",
-      "method": "GET",
-      "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
-      "workflowId": "autocomplete-lookups",
-      "hasParameters": true,
-      "hasRequestBody": false
     }
   ],
   "platformActions": [
-    "Status Mapping: Les statuts eZsign sont mappés aux Custom Status ClickUp.",
-    "Task Comments: Les webhooks eZsign ajoutent automatiquement des commentaires sur la tâche."
+    "Status Mapping: Les étapes de signature eZsign mettent à jour le statut de la tâche ClickUp.",
+    "Task Comments: Chaque étape (Envoyé, Signé, Complété) ajoute un commentaire automatique à la tâche ClickUp."
   ]
 }
