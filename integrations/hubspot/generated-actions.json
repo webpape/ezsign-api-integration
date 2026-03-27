@@ -1,27 +1,27 @@
 {
   "version": "1.3.0",
-  "platform": "HubSpot",
+  "platform": "",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:44.223Z",
+  "generatedAt": "2026-03-27T12:25:55.598Z",
   "webhooks": [
     {
-      "key": "document_signed",
-      "event": "document.signed",
-      "label": "document.signed",
-      "description": "Mise à jour du Deal HubSpot."
+      "key": "ezsignfolder_completed",
+      "event": "ezsignfolder.completed",
+      "label": "ezsignfolder.completed",
+      "description": "Mettre à jour la propriété \"Deal Stage\" dans HubSpot vers \"Contrat Signé\"."
     },
     {
-      "key": "document_rejected",
-      "event": "document.rejected",
-      "label": "document.rejected",
-      "description": "Notification dans HubSpot."
+      "key": "ezsigndocument_completed",
+      "event": "ezsigndocument.completed",
+      "label": "ezsigndocument.completed",
+      "description": "Télécharger le PDF signé et l'ajouter à la chronologie (Timeline) du Deal."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Récupérer les détails de la session active.",
+      "description": "Vérification de la session active entre HubSpot et eZsign.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -30,12 +30,23 @@
       "hasRequestBody": false
     },
     {
-      "key": "ezsignfolder_createobject_v2",
-      "label": "Create a new Ezsignfolder",
-      "description": "Créer un nouveau dossier eZsign.",
-      "operationId": "Ezsignfolder_CreateObject_V2",
+      "key": "ezsignfoldersignerassociation_createobject_v2",
+      "label": "Create a new Ezsignfoldersignerassociation",
+      "description": "Associer les contacts liés au Deal comme signataires.",
+      "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
-      "path": "/2/object/ezsignfolder",
+      "path": "/2/object/ezsignfoldersignerassociation",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": false,
+      "hasRequestBody": true
+    },
+    {
+      "key": "ezsignfolder_createobject_v3",
+      "label": "Create a new Ezsignfolder",
+      "description": "Créer un dossier eZsign à partir d'un Deal ID HubSpot.",
+      "operationId": "Ezsignfolder_CreateObject_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder",
       "workflowId": "ezsignfolder-lifecycle",
       "hasParameters": false,
       "hasRequestBody": true
@@ -43,7 +54,7 @@
     {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Récupérer l'URL de téléchargement (Original, Signed, Proof, etc.).",
+      "description": "Obtenir le lien du document signé pour l'archivage HubSpot.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -52,41 +63,19 @@
       "hasRequestBody": false
     },
     {
-      "key": "ezsigndocument_createobject_v2",
+      "key": "ezsigndocument_createobject_v3",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un nouveau document eZsign.",
-      "operationId": "Ezsigndocument_CreateObject_V2",
+      "description": "Ajouter des documents (fichiers joints du Deal) au processus de signature.",
+      "operationId": "Ezsigndocument_CreateObject_V3",
       "method": "POST",
-      "path": "/2/object/ezsigndocument",
+      "path": "/3/object/ezsigndocument",
       "workflowId": "ezsigndocument-management",
       "hasParameters": false,
       "hasRequestBody": true
-    },
-    {
-      "key": "ezsigndocument_applyezsigntemplate_v2",
-      "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template à un document.",
-      "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
-      "method": "POST",
-      "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
-      "workflowId": "ezsigndocument-management",
-      "hasParameters": true,
-      "hasRequestBody": true
-    },
-    {
-      "key": "ezsignfoldertype_getautocomplete_v2",
-      "label": "Retrieve Ezsignfoldertypes and IDs",
-      "description": "Récupérer la liste des types de dossiers pour les listes déroulantes.",
-      "operationId": "Ezsignfoldertype_GetAutocomplete_V2",
-      "method": "GET",
-      "path": "/2/object/ezsignfoldertype/getAutocomplete/{sSelector}",
-      "workflowId": "autocomplete-lookups",
-      "hasParameters": true,
-      "hasRequestBody": false
     }
   ],
   "platformActions": [
-    "Send for Signature: Utilise `Ezsigndocument_CreateObject_V2`.",
-    "Sync Status: Utilise les webhooks eZsign pour déclencher des mises à jour via l'API HubSpot."
+    "Workflow Action: Déclenchement automatique de l'envoi eZsign lorsqu'un Deal atteint une certaine étape.",
+    "Timeline Events: Inscription de chaque étape (Ouvert, Signé) dans le flux d'activité HubSpot."
   ]
 }

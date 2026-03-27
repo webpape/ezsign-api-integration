@@ -1,4 +1,18 @@
-# HubSpot Connector Integration - eZsign
+# HubSpot Integration - eZsign
+
+## Cas d'usage métiers
+- **Ventes :** Envoyez des contrats de vente ou des devis directement depuis un Deal HubSpot.
+- **Service Client :** Faites signer des accords de renouvellement de service liés à des Tickets.
+- **Opérations :** Automatisez la signature de documents de conformité liés à des Entreprises ou des Contacts.
+
+## Procédure d'installation
+1. **Application Privée :** Dans HubSpot, allez dans `Paramètres > Intégrations > Applications privées`.
+2. **Créer une App :** Cliquez sur "Créer une application privée". Nommez-la "eZsign HubSpot".
+3. **Scopes :** Accordez les permissions `crm.objects.deals.read/write` et `crm.objects.contacts.read`.
+4. **Configuration eZsign :** 
+   - Utilisez votre `Access Token` HubSpot pour lier les webhooks.
+   - Configurez l'authentification OAuth2 avec les URLs ci-dessous.
+5. **Déploiement :** Importez les définitions de `generated-actions.json` pour ajouter des "Custom Actions" dans vos Workflows HubSpot.
 
 ## Authentification
 - **Méthode :** OAuth2
@@ -7,42 +21,31 @@
 
 ## Webhooks
 Logic synchronisée avec eZsign Power Automate :
-- `document.signed` -> Mise à jour du Deal HubSpot.
-- `document.rejected` -> Notification dans HubSpot.
+- `ezsignfolder.completed` -> Mettre à jour la propriété "Deal Stage" dans HubSpot vers "Contrat Signé".
+- `ezsigndocument.completed` -> Télécharger le PDF signé et l'ajouter à la chronologie (Timeline) du Deal.
 
 ## Endpoints (Specs issues d'eZmax API Definition)
 
 ### 1. Activesession_GetCurrent_V2
 - **GET** `/2/object/activesession/getCurrent`
-- **Summary :** Récupérer les détails de la session active.
+- **Summary :** Vérification de la session active entre HubSpot et eZsign.
 
-### 2. Ezsigndocument_CreateObject_V2
-- **POST** `/2/object/ezsigndocument`
-- **Summary :** Créer un nouveau document eZsign.
-- **Détails :** Permet la création de plusieurs éléments à la fois.
+### 2. Ezsignfolder_CreateObject_V3
+- **POST** `/3/object/ezsignfolder`
+- **Summary :** Créer un dossier eZsign à partir d'un Deal ID HubSpot.
 
-### 3. Ezsigndocument_ApplyEzsigntemplate_V2
-- **POST** `/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate`
-- **Summary :** Appliquer un template à un document.
+### 3. Ezsigndocument_CreateObject_V3
+- **POST** `/3/object/ezsigndocument`
+- **Summary :** Ajouter des documents (fichiers joints du Deal) au processus de signature.
 
-### 4. Ezsigndocument_GetDownloadUrl_V1
+### 4. Ezsignfoldersignerassociation_CreateObject_V2
+- **POST** `/2/object/ezsignfoldersignerassociation`
+- **Summary :** Associer les contacts liés au Deal comme signataires.
+
+### 5. Ezsigndocument_GetDownloadUrl_V1
 - **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
-- **Summary :** Récupérer l'URL de téléchargement (Original, Signed, Proof, etc.).
-
-### 5. Ezsignfolder_CreateObject_V2
-- **POST** `/2/object/ezsignfolder`
-- **Summary :** Créer un nouveau dossier eZsign.
-
-### 6. Ezsignfoldertype_GetAutocomplete_V2
-- **GET** `/2/object/ezsignfoldertype/getAutocomplete/{sSelector}`
-- **Summary :** Récupérer la liste des types de dossiers pour les listes déroulantes.
+- **Summary :** Obtenir le lien du document signé pour l'archivage HubSpot.
 
 ## Actions HubSpot
-- **Send for Signature :** Utilise `Ezsigndocument_CreateObject_V2`.
-- **Sync Status :** Utilise les webhooks eZsign pour déclencher des mises à jour via l'API HubSpot.
-
-
-## Procédure pour HubSpot
-1. Utilisez le CLI HubSpot : `yarn hs`
-2. Créez une "Private App" ou une application publique.
-3. Importez les définitions d'API si nécessaire pour les "Custom Objects".
+- **Workflow Action :** Déclenchement automatique de l'envoi eZsign lorsqu'un Deal atteint une certaine étape.
+- **Timeline Events :** Inscription de chaque étape (Ouvert, Signé) dans le flux d'activité HubSpot.
