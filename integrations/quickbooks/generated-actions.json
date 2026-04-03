@@ -2,26 +2,32 @@
   "version": "1.3.0",
   "platform": "QuickBooks",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:50.268Z",
+  "generatedAt": "2026-04-03T23:17:20.011Z",
   "webhooks": [
     {
       "key": "document_signed",
       "event": "document.signed",
       "label": "document.signed",
-      "description": "Validation de la facture QuickBooks (Invoice)."
+      "description": "Mise à jour d'un champ personnalisé ou d'une note dans la facture QuickBooks."
     },
     {
       "key": "document_completed",
       "event": "document.completed",
       "label": "document.completed",
-      "description": "Enregistrement du PDF signé comme pièce jointe dans la transaction QuickBooks."
+      "description": "Signature finale confirmée et archivage automatique du PDF final en tant que pièce jointe dans la transaction QuickBooks."
+    },
+    {
+      "key": "folder_completed",
+      "event": "folder.completed",
+      "label": "folder.completed",
+      "description": "Changement du statut du devis en \"Accepté\" dans QuickBooks."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérification de la session active QuickBooks-eZsign.",
+      "description": "Vérifier la validité de la session d'intégration QuickBooks-eZsign.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +38,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Client QuickBooks) à un dossier.",
+      "description": "Associer les clients QuickBooks (nom, e-mail) comme signataires du dossier eZsign.",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +47,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_send_v3",
+      "label": "Send the Ezsignfolder to the signatories for signature",
+      "description": "Expédier le dossier complet aux clients une fois les données QuickBooks intégrées.",
+      "operationId": "Ezsignfolder_Send_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder/{pkiEzsignfolderID}/send",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Récupérer l'URL de téléchargement sécurisée pour attacher le PDF signé à QuickBooks.",
+      "description": "Récupérer l'URL de téléchargement sécurisée pour attacher le PDF signé à la transaction QuickBooks.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -54,7 +71,7 @@
     {
       "key": "ezsigndocument_createobject_v2",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un nouveau document à partir d'une facture ou d'une estimation QuickBooks.",
+      "description": "Créer un nouveau document à partir des données d'une facture, d'un reçu ou d'une estimation QuickBooks.",
       "operationId": "Ezsigndocument_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument",
@@ -65,7 +82,7 @@
     {
       "key": "ezsigndocument_applyezsigntemplate_v2",
       "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign prédéfini (ex: Termes et Conditions).",
+      "description": "Appliquer un modèle eZsign prédéfini (ex: Conditions de vente) aux documents générés depuis QuickBooks.",
       "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
@@ -76,7 +93,7 @@
     {
       "key": "ezsigntemplate_getautocomplete_v2",
       "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates disponibles dans les automatisations de facturation.",
+      "description": "Lister les modèles eZsign pour les automatisations de facturation ou de devis.",
       "operationId": "Ezsigntemplate_GetAutocomplete_V2",
       "method": "GET",
       "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
@@ -85,8 +102,5 @@
       "hasRequestBody": false
     }
   ],
-  "platformActions": [
-    "Trigger Signature: Automatisation du type \"When Invoice is created, send Termes et Conditions for eZsign Signature\" utilisant `Ezsigndocument_CreateObject_V2`.",
-    "Payment Link Mapping: Mappage du lien de paiement QuickBooks avec le lien de signature eZsign."
-  ]
+  "platformActions": []
 }
