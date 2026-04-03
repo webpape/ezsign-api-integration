@@ -2,26 +2,32 @@
   "version": "1.3.0",
   "platform": "NetSuite",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:48.524Z",
+  "generatedAt": "2026-04-03T23:05:28.548Z",
   "webhooks": [
     {
       "key": "document_signed",
       "event": "document.signed",
       "label": "document.signed",
-      "description": "Mise à jour du Custom Record NetSuite."
+      "description": "Mise à jour du statut dans l'enregistrement personnalisé ou la transaction NetSuite."
     },
     {
       "key": "document_completed",
       "event": "document.completed",
       "label": "document.completed",
-      "description": "Signature finale et archivage du PDF dans le File Cabinet de NetSuite."
+      "description": "Signature finale, notification par e-mail au gestionnaire de compte NetSuite."
+    },
+    {
+      "key": "folder_completed",
+      "event": "folder.completed",
+      "label": "folder.completed",
+      "description": "Déclenchement de l'archivage du PDF final dans le File Cabinet de NetSuite."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Authentification de la session NetSuite.",
+      "description": "Vérifier l'authentification et les permissions de la session pour l'intégration NetSuite.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +38,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Entity/Customer NetSuite).",
+      "description": "Associer les entités NetSuite (Clients, Fournisseurs, Employés) en tant que signataires.",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +47,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_send_v3",
+      "label": "Send the Ezsignfolder to the signatories for signature",
+      "description": "Expédier le dossier pour signature une fois toutes les données NetSuite mappées.",
+      "operationId": "Ezsignfolder_Send_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder/{pkiEzsignfolderID}/send",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Fournir l'URL de téléchargement sécurisée.",
+      "description": "Fournir l'URL de téléchargement sécurisée pour le script d'archivage NetSuite.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -54,7 +71,7 @@
     {
       "key": "ezsigndocument_createobject_v2",
       "label": "Create a new Ezsigndocument",
-      "description": "Action de création de document à partir d'un Sales Order ou Invoice NetSuite.",
+      "description": "Action de création de document à partir d'un Sales Order, Invoice ou Customer Record NetSuite.",
       "operationId": "Ezsigndocument_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument",
@@ -65,7 +82,7 @@
     {
       "key": "ezsigndocument_applyezsigntemplate_v2",
       "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign.",
+      "description": "Appliquer un modèle eZsign correspondant au type de transaction NetSuite.",
       "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
@@ -76,7 +93,7 @@
     {
       "key": "ezsigntemplate_getautocomplete_v2",
       "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates pour sélection dans SuiteScript.",
+      "description": "Lister les modèles eZsign pour les sélections dynamiques dans SuiteScript.",
       "operationId": "Ezsigntemplate_GetAutocomplete_V2",
       "method": "GET",
       "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
@@ -85,8 +102,5 @@
       "hasRequestBody": false
     }
   ],
-  "platformActions": [
-    "SuiteScript Integration: Déclenché via un bouton ou User Event Script.",
-    "Dynamic Webhooks: Abonnement via RESTlets NetSuite."
-  ]
+  "platformActions": []
 }
