@@ -2,26 +2,32 @@
   "version": "1.3.0",
   "platform": "Monday.com",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:47.671Z",
+  "generatedAt": "2026-04-03T22:59:18.951Z",
   "webhooks": [
     {
       "key": "document_signed",
       "event": "document.signed",
       "label": "document.signed",
-      "description": "Changement de statut d'une cellule Monday.com."
+      "description": "Changement de statut d'une cellule dans un tableau Monday.com."
     },
     {
       "key": "document_completed",
       "event": "document.completed",
       "label": "document.completed",
-      "description": "Mise à jour du lien de signature dans la colonne \"Lien\" de Monday."
+      "description": "Mise à jour du lien de téléchargement sécurisé dans une colonne \"Fichier\" ou \"Lien\" de Monday."
+    },
+    {
+      "key": "folder_completed",
+      "event": "folder.completed",
+      "label": "folder.completed",
+      "description": "Marquer l'élément Monday comme \"Terminé\" et notifier le gestionnaire du tableau."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérifier la validité de la session d'intégration Monday.",
+      "description": "Vérifier la validité et les permissions de la session d'intégration Monday.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +38,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Contact dans une colonne Monday) à un dossier.",
+      "description": "Associer les contacts (e-mail/nom) d'une colonne Monday en tant que signataires du dossier.",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +47,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_send_v3",
+      "label": "Send the Ezsignfolder to the signatories for signature",
+      "description": "Envoyer le dossier complet aux signataires après l'initialisation depuis Monday.",
+      "operationId": "Ezsignfolder_Send_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder/{pkiEzsignfolderID}/send",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Récupérer l'URL de téléchargement sécurisée pour Monday Files.",
+      "description": "Récupérer l'URL de téléchargement sécurisée pour l'inclure dans les colonnes de Monday Files.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -54,7 +71,7 @@
     {
       "key": "ezsigndocument_createobject_v2",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un nouveau document à partir d'une ligne d'un tableau Monday.",
+      "description": "Créer un nouveau document à partir des données d'une ligne d'un tableau Monday.",
       "operationId": "Ezsigndocument_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument",
@@ -65,7 +82,7 @@
     {
       "key": "ezsigndocument_applyezsigntemplate_v2",
       "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign prédéfini (ex: Document RH).",
+      "description": "Appliquer un modèle eZsign prédéfini (ex: Contrat standard) à un document généré depuis Monday.",
       "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
@@ -76,7 +93,7 @@
     {
       "key": "ezsigntemplate_getautocomplete_v2",
       "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates disponibles dans les automatisations Monday.",
+      "description": "Lister les modèles disponibles pour les automatisations ou les sélections manuelles dans Monday.",
       "operationId": "Ezsigntemplate_GetAutocomplete_V2",
       "method": "GET",
       "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
@@ -85,8 +102,5 @@
       "hasRequestBody": false
     }
   ],
-  "platformActions": [
-    "Trigger Signature: Automatisation du type \"When Status changes, trigger eZsign Signature Request\" utilisant `Ezsigndocument_CreateObject_V2`.",
-    "Status Sync: Les webhooks eZsign mettent à jour la colonne Monday \"Signature Status\"."
-  ]
+  "platformActions": []
 }
