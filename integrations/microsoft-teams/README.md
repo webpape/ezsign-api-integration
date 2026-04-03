@@ -5,41 +5,57 @@
 - **Authorization URL :** `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/authorize`
 - **Token URL :** `https://prod.api.appcluster01.ca-central-1.ezmax.com/rest/oauth/token`
 
+## Cas d'usage métiers
+- **Notifications de signature en temps réel** : Informer immédiatement les membres d'une équipe ou d'un canal lorsqu'un document est signé ou complété.
+- **Approbation collaborative** : Lancer un processus de signature eZsign directement depuis une conversation Teams via un raccourci ou un bot.
+- **Accès rapide aux documents** : Récupérer des liens de téléchargement sécurisés pour les documents signés sans quitter l'interface Teams.
+- **Gestion de projet** : Suivre l'avancement des dossiers eZsign liés à des projets gérés dans Teams.
+
 ## Webhooks
 Logic synchronisée avec eZsign Power Automate :
-- `document.signed` -> Envoi automatique d'Adaptive Cards dans les canaux Teams.
-- `document.completed` -> Message final avec lien de téléchargement.
+- `document.signed` -> Envoi automatique d'Adaptive Cards dans les canaux Teams pour notifier les parties prenantes.
+- `document.completed` -> Message final avec lien de téléchargement sécurisé posté dans le canal approprié.
+- `folder.completed` -> Notification de clôture du dossier pour archivage ou étape suivante du projet.
 
 ## Endpoints (Specs issues d'eZmax API Definition)
 
 ### 1. Activesession_GetCurrent_V2
 - **GET** `/2/object/activesession/getCurrent`
-- **Summary :** Vérifier les permissions de l'application Teams intégrée.
+- **Summary :** Vérifier les permissions et l'état de la session de l'application Teams intégrée.
 
 ### 2. Ezsigndocument_CreateObject_V2
 - **POST** `/2/object/ezsigndocument`
-- **Summary :** Déclencher une signature via une Task Module ou Message Shortcut Teams.
+- **Summary :** Créer un nouveau document eZsign à partir d'une action interactive dans Teams.
 
 ### 3. Ezsigndocument_GetDownloadUrl_V1
 - **GET** `/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}`
-- **Summary :** Fournir un lien de téléchargement sécurisé dans le chat Teams (expire après 5 min).
+- **Summary :** Générer un lien de téléchargement temporaire pour un document signé à afficher dans Teams.
 
 ### 4. Ezsignfoldertype_GetAutocomplete_V2
 - **GET** `/2/object/ezsignfoldertype/getAutocomplete/{sSelector}`
-- **Summary :** Liste déroulante des types de dossiers dans les formulaires de création Teams.
+- **Summary :** Rechercher les types de dossiers disponibles pour peupler les formulaires Teams.
 
 ### 5. Ezsigntemplateglobal_GetAutocomplete_V2
 - **GET** `/2/object/ezsigntemplateglobal/getAutocomplete/{sSelector}`
-- **Summary :** Sélectionner un template global eZmax pour les documents de collaboration.
+- **Summary :** Lister les modèles globaux eZmax pour une sélection rapide lors de la création de documents.
 
-## Actions Teams
-- **Interactive Notifications :** Utilise les webhooks eZsign mappés vers les Activity Feeds ou Channel Messages.
-- **Teams Bot :** Utilise `Ezsigndocument_GetDownloadUrl_V1` pour répondre aux requêtes de statut.
+### 6. Ezsignfolder_Send_V3
+- **POST** `/3/object/ezsignfolder/{pkiEzsignfolderID}/send`
+- **Summary :** Envoyer le dossier pour signature une fois préparé via l'interface Teams.
 
+## Actions Microsoft Teams
+- **Adaptive Cards** : Utiliser les webhooks pour envoyer des cartes riches et interactives permettant aux utilisateurs de voir le statut d'un document.
+- **Bots de conversation** : Interroger le bot pour obtenir l'état d'avancement d'un dossier via `Ezsigndocument_GetDownloadUrl_V1`.
+- **Raccourcis de message** : Créer un dossier eZsign à partir d'un message existant dans Teams en utilisant `Ezsigndocument_CreateObject_V2`.
 
-## Procédure pour créer un connecteur Microsoft-teams
-1. Accédez au portail développeur de Microsoft-teams.
-2. Créez une nouvelle intégration / application.
-3. Importez le fichier `swagger.json` de ce dossier pour définir les points de terminaison.
-4. Configurez l'authentification (OAuth2 ou Clé API) en utilisant les paramètres eZmax.
-5. Testez la connexion avec l'endpoint `/2/object/activesession/getCurrent`.
+## Procédure pour créer un connecteur Microsoft Teams
+1. Connectez-vous au **Portail Développeur Microsoft Teams** (Teams Developer Portal).
+2. Créez une nouvelle application ou ouvrez une application existante.
+3. Allez dans l'onglet **App features** et activez les fonctionnalités nécessaires (Bot, Messaging Extension).
+4. Pour l'API eZsign :
+    - Allez dans **API Connectors**.
+    - Ajoutez un nouveau connecteur en utilisant les spécifications fournies dans `generated-actions.json`.
+    - Configurez l'authentification OAuth2 avec les URLs fournies dans la section "Authentification" ci-dessus.
+5. Configurez les **Outgoing Webhooks** ou utilisez **Power Automate** pour Teams afin de recevoir les notifications eZsign.
+6. Testez la connectivité en utilisant l'action `Activesession_GetCurrent_V2`.
+7. Publiez l'application dans votre catalogue d'organisation Teams.

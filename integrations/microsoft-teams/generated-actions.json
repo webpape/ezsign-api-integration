@@ -2,26 +2,32 @@
   "version": "1.3.0",
   "platform": "Microsoft Teams",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:46.816Z",
+  "generatedAt": "2026-04-03T22:53:21.123Z",
   "webhooks": [
     {
       "key": "document_signed",
       "event": "document.signed",
       "label": "document.signed",
-      "description": "Envoi automatique d'Adaptive Cards dans les canaux Teams."
+      "description": "Envoi automatique d'Adaptive Cards dans les canaux Teams pour notifier les parties prenantes."
     },
     {
       "key": "document_completed",
       "event": "document.completed",
       "label": "document.completed",
-      "description": "Message final avec lien de téléchargement."
+      "description": "Message final avec lien de téléchargement sécurisé posté dans le canal approprié."
+    },
+    {
+      "key": "folder_completed",
+      "event": "folder.completed",
+      "label": "folder.completed",
+      "description": "Notification de clôture du dossier pour archivage ou étape suivante du projet."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérifier les permissions de l'application Teams intégrée.",
+      "description": "Vérifier les permissions et l'état de la session de l'application Teams intégrée.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -30,9 +36,20 @@
       "hasRequestBody": false
     },
     {
+      "key": "ezsignfolder_send_v3",
+      "label": "Send the Ezsignfolder to the signatories for signature",
+      "description": "Envoyer le dossier pour signature une fois préparé via l'interface Teams.",
+      "operationId": "Ezsignfolder_Send_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder/{pkiEzsignfolderID}/send",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Fournir un lien de téléchargement sécurisé dans le chat Teams (expire après 5 min).",
+      "description": "Générer un lien de téléchargement temporaire pour un document signé à afficher dans Teams.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -43,7 +60,7 @@
     {
       "key": "ezsigndocument_createobject_v2",
       "label": "Create a new Ezsigndocument",
-      "description": "Déclencher une signature via une Task Module ou Message Shortcut Teams.",
+      "description": "Créer un nouveau document eZsign à partir d'une action interactive dans Teams.",
       "operationId": "Ezsigndocument_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument",
@@ -54,7 +71,7 @@
     {
       "key": "ezsignfoldertype_getautocomplete_v2",
       "label": "Retrieve Ezsignfoldertypes and IDs",
-      "description": "Liste déroulante des types de dossiers dans les formulaires de création Teams.",
+      "description": "Rechercher les types de dossiers disponibles pour peupler les formulaires Teams.",
       "operationId": "Ezsignfoldertype_GetAutocomplete_V2",
       "method": "GET",
       "path": "/2/object/ezsignfoldertype/getAutocomplete/{sSelector}",
@@ -65,7 +82,7 @@
     {
       "key": "ezsigntemplateglobal_getautocomplete_v2",
       "label": "Retrieve Ezsigntemplateglobals and IDs",
-      "description": "Sélectionner un template global eZmax pour les documents de collaboration.",
+      "description": "Lister les modèles globaux eZmax pour une sélection rapide lors de la création de documents.",
       "operationId": "Ezsigntemplateglobal_GetAutocomplete_V2",
       "method": "GET",
       "path": "/2/object/ezsigntemplateglobal/getAutocomplete/{sSelector}",
@@ -74,8 +91,5 @@
       "hasRequestBody": false
     }
   ],
-  "platformActions": [
-    "Interactive Notifications: Utilise les webhooks eZsign mappés vers les Activity Feeds ou Channel Messages.",
-    "Teams Bot: Utilise `Ezsigndocument_GetDownloadUrl_V1` pour répondre aux requêtes de statut."
-  ]
+  "platformActions": []
 }
