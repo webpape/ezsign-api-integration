@@ -2,26 +2,32 @@
   "version": "1.3.0",
   "platform": "Pipefy",
   "source": "arazzo",
-  "generatedAt": "2026-03-24T00:22:49.397Z",
+  "generatedAt": "2026-04-03T23:11:34.434Z",
   "webhooks": [
     {
       "key": "document_signed",
       "event": "document.signed",
       "label": "document.signed",
-      "description": "Changement de phase d'une carte Pipefy."
+      "description": "Déplacement automatique de la carte vers la phase suivante du processus Pipefy."
     },
     {
       "key": "document_completed",
       "event": "document.completed",
       "label": "document.completed",
-      "description": "Signature et archivage automatique dans la phase finale."
+      "description": "Signature finale confirmée et archivage automatique du PDF final dans la phase d'achèvement."
+    },
+    {
+      "key": "folder_completed",
+      "event": "folder.completed",
+      "label": "folder.completed",
+      "description": "Ajout d'un commentaire sur la carte avec le lien de téléchargement sécurisé du document signé."
     }
   ],
   "actions": [
     {
       "key": "activesession_getcurrent_v2",
       "label": "Get Current Activesession",
-      "description": "Vérification de la session active Pipefy-eZsign.",
+      "description": "Vérification de la validité de la session active pour l'intégration Pipefy-eZsign.",
       "operationId": "Activesession_GetCurrent_V2",
       "method": "GET",
       "path": "/2/object/activesession/getCurrent",
@@ -32,7 +38,7 @@
     {
       "key": "ezsignfoldersignerassociation_createobject_v2",
       "label": "Create a new Ezsignfoldersignerassociation",
-      "description": "Associer un signataire (Email dans un champ de formulaire Pipefy) à un dossier.",
+      "description": "Associer les signataires identifiés par les champs de formulaire Pipefy au dossier eZsign.",
       "operationId": "Ezsignfoldersignerassociation_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsignfoldersignerassociation",
@@ -41,9 +47,20 @@
       "hasRequestBody": true
     },
     {
+      "key": "ezsignfolder_send_v3",
+      "label": "Send the Ezsignfolder to the signatories for signature",
+      "description": "Expédier officiellement le dossier aux signataires après la configuration via les triggers Pipefy.",
+      "operationId": "Ezsignfolder_Send_V3",
+      "method": "POST",
+      "path": "/3/object/ezsignfolder/{pkiEzsignfolderID}/send",
+      "workflowId": "ezsignfolder-lifecycle",
+      "hasParameters": true,
+      "hasRequestBody": true
+    },
+    {
       "key": "ezsigndocument_getdownloadurl_v1",
       "label": "Retrieve a URL to download documents",
-      "description": "Récupérer l'URL de téléchargement sécurisée pour les pièces jointes Pipefy.",
+      "description": "Récupérer l'URL de téléchargement sécurisée pour attacher le document final aux pièces jointes de la carte Pipefy.",
       "operationId": "Ezsigndocument_GetDownloadUrl_V1",
       "method": "GET",
       "path": "/1/object/ezsigndocument/{pkiEzsigndocumentID}/getDownloadUrl/{eDocumentType}",
@@ -54,7 +71,7 @@
     {
       "key": "ezsigndocument_createobject_v2",
       "label": "Create a new Ezsigndocument",
-      "description": "Créer un nouveau document à partir d'une carte Pipefy.",
+      "description": "Créer un nouveau document eZsign à partir des données extraites d'une carte Pipefy.",
       "operationId": "Ezsigndocument_CreateObject_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument",
@@ -65,7 +82,7 @@
     {
       "key": "ezsigndocument_applyezsigntemplate_v2",
       "label": "Apply an Ezsigntemplate to the Ezsigndocument",
-      "description": "Appliquer un template eZsign prédéfini (ex: Approbation Budgétaire).",
+      "description": "Appliquer un modèle eZsign prédéfini (ex: Accord de confidentialité) lors de la création depuis Pipefy.",
       "operationId": "Ezsigndocument_ApplyEzsigntemplate_V2",
       "method": "POST",
       "path": "/2/object/ezsigndocument/{pkiEzsigndocumentID}/applyEzsigntemplate",
@@ -76,7 +93,7 @@
     {
       "key": "ezsigntemplate_getautocomplete_v2",
       "label": "Retrieve Ezsigntemplates and IDs",
-      "description": "Lister les templates disponibles dans les automatisations Pipefy.",
+      "description": "Lister les modèles disponibles pour peupler les automatisations de phase dans Pipefy.",
       "operationId": "Ezsigntemplate_GetAutocomplete_V2",
       "method": "GET",
       "path": "/2/object/ezsigntemplate/getAutocomplete/{sSelector}",
@@ -85,8 +102,5 @@
       "hasRequestBody": false
     }
   ],
-  "platformActions": [
-    "Automation Trigger: \"When card enters a phase, create eZsign document\" utilisant `Ezsigndocument_CreateObject_V2`.",
-    "Phase Transition: Les webhooks eZsign déplacent la carte vers la phase suivante."
-  ]
+  "platformActions": []
 }
